@@ -1,0 +1,55 @@
+package controllers;
+
+import java.util.List;
+import models.${entity.name};
+import play.mvc.Controller;
+import play.data.validation.Validation;
+import siena.Model;
+
+public class ${entity.controllerName} extends Controller {
+	public static void index() {
+		List<${entity.name}> entities = Model.all(${entity.name}.class).fetch();
+		render(entities);
+	}
+
+	public static void create(${entity.name} entity) {
+		render(entity);
+	}
+
+	public static void show(Long id) {
+		${entity.name} entity = ${entity.name}.findById(id);
+		render(entity);
+	}
+
+	public static void edit(Long id) {
+		${entity.name} entity = ${entity.name}.findById(id);
+		render(entity);
+	}
+
+	public static void delete(Long id) {
+		${entity.name} entity = ${entity.name}.findById(id);
+		entity.delete();
+		index();
+	}
+	
+	public static void save(${entity.name} entity) {
+		if (Validation.hasErrors()) {
+			flash.error("Validation error");
+			create(entity);
+		}
+		entity.insert();
+		flash.success("${entity.name} was created");
+		index();
+	}
+
+	public static void update(${entity.name} entity) {
+		if (Validation.hasErrors()) {
+			flash.error("Validation error");
+			edit(entity.id);
+		}
+		entity.update();
+		flash.success("${entity.name} was updated");
+		index();
+	}
+
+}
