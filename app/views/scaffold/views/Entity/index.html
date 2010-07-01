@@ -1,0 +1,22 @@
+${"#{"}extends 'main.html' /}
+
+<h2>${entity.controllerName}</h2>
+
+<table class="entity ${entity.name}">
+	<tr>
+		<td><!-- actions --></td>
+		#{list items:entity.properties, as:'property'}
+			<td>${property.name}</td>
+		#{/list}
+	</tr>
+	${"#{"}list items:entities, as:'entity'}
+		<tr>
+			<td><a href="${"@{"}${entity.controllerName}.show(entity.id)}">Show</a>&nbsp;<a href="${"@{"}${entity.controllerName}.edit(entity.id)}">Edit</a>&nbsp;<a href="${"@{"}${entity.controllerName}.delete(entity.id)}" onclick="if (!confirm('Are you sure you want to delete this record?')) return false;">Delete</a></td>
+			#{list items:entity.properties, as:'property'}
+				<td>${entity.expressionOpen}entity.${property.name}}</td>
+			#{/list}
+		</tr>
+	${"#{/"}list}
+</table>
+
+<a href="${"@{"}${entity.controllerName}.create}">Create</a>

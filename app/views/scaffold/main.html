@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>#{get 'title' /}</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/stylesheets/default.css'}">
+        <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/stylesheets/main.css'}">
+        #{get 'moreStyles' /}
+        <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}">
+        <script src="@{'/public/javascripts/jquery-1.4.2.min.js'}" type="text/javascript" charset="utf-8"></script>
+        #{get 'moreScripts' /}
+    </head>
+    <body>
+		<div id="header"> 
+		     <a class="title" href="@{Application.index}">~ Your New Application ~</a>
+		</div>
+		<div id="content-container">
+			<div id="content">
+		        #{if flash.error}
+		            <p class="fError">
+		                <strong>${flash.error}</strong>
+		            </p>
+		        #{/if}
+		        #{if flash.success}
+		            <p class="fSuccess">
+		                <strong>${flash.success}</strong>
+		            </p>
+		        #{/if}
+				
+		        #{doLayout /}
+		    </div>
+		</div>
+		<div id="footer">
+			<script type="text/javascript"> 
+			var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+			document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+			</script>
+			<script type="text/javascript">
+			//TODO: add Google Analytics tracking ID and uncomment
+			//try {
+			//var pageTracker = _gat._getTracker("YOUR_TRACKING_ID");
+			//pageTracker._trackPageview();
+			//} catch(err) {}
+			</script>
+		</div>
+    </body>
+</html>

@@ -1,0 +1,18 @@
+${"#{"}extends 'main.html' /}
+
+<h2>View ${entity.name}</h2>
+
+<div class="entity">
+#{list items:entity.properties, as:'property'}
+	<div class="row">
+		<span class="property">
+			${property.name}:
+		</span>
+		<span class="value">
+			${entity.expressionOpen}entity.${property.name}}
+		</span>
+	</div>
+#{/list}
+</div>
+
+<a href="${"@{"}${entity.controllerName}.index}">Back</a>
