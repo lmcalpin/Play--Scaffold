@@ -4,28 +4,7 @@ ${"#{"}extends 'main.html' /}
 
 <div class="entity">
 ${"#{"}form @${entity.controllerName}.save(), id:'createForm'}
-	#{list items:entity.properties, as:'property'}
-		<div class="row">
-			<div class="label">
-				${property.name}
-			</div>
-			<div class="field">
-				%{ if (property.isCheckbox()) { }%
-					<input type="checkbox" name="entity.${property.name}" ${entity.expressionOpen}entity?.${property.name} ? 'checked' : ''} />
-				%{ } else if (property.isSelect()) { }%
-					<select name="entity.${property.name}">
-						#{list property.options, as: 'option'}
-							<option value="${option}" 
-								${entity.expressionOpen}(entity?.${property.name}?.name() == "${option}") ? 'selected' : ''}>${option}</option>
-						#{/list}
-					</select>
-				%{ } else { }%
-					<input type="text" name="entity.${property.name}" value="${entity.expressionOpen}entity?.${property.name}}"/>
-				%{ } }%
-			</div>
-			<span class="error">${entity.expressionOpen}errors.forKey('entity.${property.name}')}</span>
-		</div>
-	#{/list}
+	#{include 'scaffold/views/Entity/_form.html' /}
 	<input type="submit" name="submit" value="Save" />
 ${"#{/"}form}
 </div>

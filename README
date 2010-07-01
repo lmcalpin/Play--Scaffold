@@ -1,4 +1,4 @@
-Welcome to the Play—Scaffold wiki!
+Welcome to the Play--Scaffold wiki!
 
 To use, reference the module from your application.conf:
 module.scaffold=C:/Path/To/Play/Modules/scaffold/
@@ -9,7 +9,7 @@ play new
 Then add some JPA or Siena models. The model entities have to extend play.db.jpa.Model or siena.Model.
 
 Then run:
-play scaffold:gen —overwrite
+play scaffold:gen --overwrite
 
 Then launch your application:
 play run

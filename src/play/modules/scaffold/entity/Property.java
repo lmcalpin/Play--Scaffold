@@ -19,6 +19,7 @@
 package play.modules.scaffold.entity;
 
 import java.lang.reflect.Field;
+import java.util.Date;
 import java.util.List;
 
 import play.modules.scaffold.utils.Enums;
@@ -27,7 +28,7 @@ public class Property
 {
 	public static enum Type
 	{
-		TEXT, CHECKBOX, SELECT
+		TEXT, CHECKBOX, SELECT, DATE
 	};
 
 	public String name;
@@ -41,6 +42,8 @@ public class Property
 		if (classType.equals(Boolean.class) || classType.equals(boolean.class))
 		{
 			this.type = Type.CHECKBOX;
+		} else if (classType.equals(Date.class)) {
+			this.type = Type.DATE;
 		} else if (classType.isEnum())
 		{
 			this.type = Type.SELECT;
@@ -60,6 +63,16 @@ public class Property
 	public boolean isSelect()
 	{
 		return type == Type.SELECT;
+	}
+	
+	public boolean isDate()
+	{
+		return type == Type.DATE;
+	}
+	
+	public boolean isText()
+	{
+		return type == Type.TEXT;
 	}
 	
 	public List<String> getOptions()

@@ -206,6 +206,9 @@ public class ScaffoldGenerator
 		} catch (IOException e)
 		{
 			Logger.warn(e, "! Failed to generate output successfully: " + e.getMessage());
+		} catch (Throwable t) {
+			Logger.fatal(t, "! Unexpected error processing template", args);
+			System.exit(-1);
 		}
 	}
 }
