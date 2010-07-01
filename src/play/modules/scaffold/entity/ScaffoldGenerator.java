@@ -18,12 +18,8 @@
  */
 package play.modules.scaffold.entity;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -32,6 +28,7 @@ import java.util.Map;
 
 import play.Logger;
 import play.Play;
+import play.libs.IO;
 import play.templates.Template;
 import play.templates.TemplateCompiler;
 import play.vfs.VirtualFile;
@@ -147,21 +144,12 @@ public class ScaffoldGenerator
 		String templateLayout = templateFile.contentAsString();
 		if (targetFile == null || !targetFile.exists() || forceOverwrite)
 		{
-			Writer outputStream = null;
-			try
-			{
-				File root = new File(System.getProperty("application.path"));
-				outputStream = new FileWriter(root.getAbsoluteFile() + File.separator + targetPath);
-				outputStream.write(templateLayout);
-			} catch (FileNotFoundException e)
-			{
-				Logger.error(e, "File not found");
+			try {
+				File fileToCreate = Play.getFile(targetPath);
+				IO.writeContent(templateLayout, fileToCreate);
 			} catch (IOException e)
 			{
 				Logger.error(e, "IO Exception");
-			} finally
-			{
-				close(outputStream);
 			}
 		} else
 		{
@@ -177,18 +165,6 @@ public class ScaffoldGenerator
 		templateArgs.put("entities", entities);
 		templateArgs.put("tagOpen", "#{"); // TODO: HACK, need to get rid of these
 		generate(homeSourcePath, homeTemplatePath, templateArgs);
-	}
-
-	private static void close(Writer outputStream)
-	{
-		try
-		{
-			if (outputStream != null)
-				outputStream.close();
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
 	}
 
 	private void generateForEntity(String sourcePath, String templatePath, Entity entity)
@@ -207,44 +183,27 @@ public class ScaffoldGenerator
 		// if the source code already exists, skip it - we do not overwrite normally
 		if (targetFile == null || !targetFile.exists() || forceOverwrite)
 		{
-			Writer outputStream = null;
-			try
+			File fileToCreate = Play.getFile(targetPath);
+			if (templateFile == null || !templateFile.exists())
 			{
-				File root = new File(System.getProperty("application.path"));
-				outputStream = new FileWriter(root.getAbsoluteFile() + File.separator + targetPath);
-				if (templateFile == null || !templateFile.exists())
-				{
-					Logger.error("!! ERROR: Can't find scaffold template -- " + templatePath);
-				}
-				invokeTemplate(templateFile, outputStream, args);
-				Logger.info("+ " + targetPath);
-				// Logger.info(output);
-			} catch (FileNotFoundException e)
-			{
-				Logger.error(e, "File not found");
-			} catch (IOException e)
-			{
-				Logger.error(e, "IO Exception");
-			} finally
-			{
-				close(outputStream);
+				Logger.error("!! ERROR: Can't find scaffold template -- " + templatePath);
 			}
+			invokeTemplate(templateFile, fileToCreate, args);
+			Logger.info("+ " + targetPath);
 		} else
 		{
 			Logger.info("! Skipping " + targetPath);
 		}
 	}
 
-	public static void invokeTemplate(VirtualFile templateFile, Writer outputStream, Map<String, Object> args) throws IOException
+	public static void invokeTemplate(VirtualFile templateFile, File targetFile, Map<String, Object> args)
 	{
 		Template template = TemplateCompiler.compile(templateFile);
 		try
 		{
 			String output = template.render(args);
-			BufferedWriter sw = new BufferedWriter(outputStream);
-			sw.write(output);
-			sw.flush();
-		} catch (Exception e)
+			IO.writeContent(output, targetFile);
+		} catch (IOException e)
 		{
 			Logger.warn(e, "! Failed to generate output successfully: " + e.getMessage());
 		}

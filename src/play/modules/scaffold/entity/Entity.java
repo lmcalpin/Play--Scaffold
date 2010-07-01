@@ -42,10 +42,6 @@ public class Entity
 	public List<Property> properties;
 	public ModelType modelType;
 
-	public Entity()
-	{
-	}
-
 	public Entity(Class<?> clazz)
 	{
 		this.name = clazz.getSimpleName();
