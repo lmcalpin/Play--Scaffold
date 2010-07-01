@@ -23,6 +23,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import play.db.jpa.Model;
+import play.modules.scaffold.utils.Classes;
 import play.templates.JavaExtensions;
 
 /**
@@ -38,6 +40,7 @@ public class Entity
 	public String controllerTemplatePath;
 	public String viewTemplatePath;
 	public List<Property> properties;
+	public ModelType modelType;
 
 	public Entity()
 	{
@@ -55,6 +58,26 @@ public class Entity
 		{
 			addProperty(field);
 		}
+		this.modelType = type(clazz);
+	}
+	
+	// Determine whether this is a play.db.jpa.Model model or an alternative model,
+	// such as a siena.Model.  Since we can't be sure that alternative model support classes,
+	// such as siena.Model, are available on the classpath, we determine all superclasses
+	// for our model, and compile a List of class names that our model is descended from.
+	// Then, we simply see if the class name for our database support class is in that list.
+	public static ModelType type(Class<?> clazz)
+	{
+		if (Classes.superclasses(clazz).contains("play.db.jpa.Model"))
+		{
+			return ModelType.PLAY_JPA;
+		}
+		if (Classes.superclasses(clazz).contains("siena.Model"))
+		{
+			return ModelType.SIENA;
+		}
+		// unsupported model
+		return null;
 	}
 
 	private void addProperty(Field idField)

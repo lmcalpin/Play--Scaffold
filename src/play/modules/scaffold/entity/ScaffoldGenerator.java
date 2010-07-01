@@ -114,7 +114,7 @@ public class ScaffoldGenerator
 
 		Logger.info("Generating controller: " + entity.controllerName);
 		String controllerSourcePath = "app" + File.separator + "controllers" + File.separator + entity.controllerName + ".java";
-		String controllerTemplatePath = "app" + File.separator + "views" + File.separator + "scaffold" + File.separator + "controllers" + File.separator + "controller.html";
+		String controllerTemplatePath = "app" + File.separator + "views" + File.separator + "scaffold" + File.separator + "controllers" + File.separator + "controller." + entity.modelType.name().toLowerCase() + ".html";
 
 		generateForEntity(controllerSourcePath, controllerTemplatePath, entity);
 	}
@@ -221,10 +221,10 @@ public class ScaffoldGenerator
 				// Logger.info(output);
 			} catch (FileNotFoundException e)
 			{
-				e.printStackTrace();
+				Logger.error(e, "File not found");
 			} catch (IOException e)
 			{
-				e.printStackTrace();
+				Logger.error(e, "IO Exception");
 			} finally
 			{
 				close(outputStream);

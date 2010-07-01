@@ -23,7 +23,6 @@ import java.util.List;
 
 import play.Logger;
 import play.Play;
-import play.db.jpa.Model;
 import play.modules.scaffold.entity.Entity;
 import play.modules.scaffold.entity.ScaffoldGenerator;
 
@@ -58,13 +57,16 @@ public class Generate
 		
 		// Locate domain model classes that we can process.
 		// Currently, we only support classes that extend the 
-		// play.db.jpa.Model class. 
+		// play.db.jpa.Model or siena.Model classes. 
 		List<Class> classes = Play.classloader.getAllClasses();
 		ScaffoldGenerator generator = new ScaffoldGenerator();
 		generator.setForceOverwrite(forceOverwrite);
 		for (Class clazz : classes)
 		{
-			if (Model.class.isAssignableFrom(clazz))
+			// If this model is of a supported type, queue it up
+			// so the ScaffoldGenerator will create its controller
+			// and views.
+			if (Entity.type(clazz) != null)
 			{
 				Entity entity = new Entity(clazz);
 				generator.addEntity(entity);
