@@ -3,13 +3,13 @@ ${"#{"}extends 'main.html' /}
 <h2>View ${entity.name}</h2>
 
 <div class="entity">
-#{list items:entity.properties, as:'property'}
+#{list items:entity.formElements, as:'elem'}
 	<div class="row">
-		<span class="property">
-			${property.name}:
+		<span class="elem">
+			${elem.name}:
 		</span>
 		<span class="value">
-			${entity.expressionOpen}entity.${property.name}}
+			${entity.expressionOpen}entity.${elem.name}}
 		</span>
 	</div>
 #{/list}

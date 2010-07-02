@@ -23,7 +23,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import play.db.jpa.Model;
+import play.modules.scaffold.form.FormElement;
+import play.modules.scaffold.strategy.ViewScaffoldingStrategy;
 import play.modules.scaffold.utils.Classes;
 import play.templates.JavaExtensions;
 
@@ -39,8 +40,12 @@ public class Entity
 	public String controllerName;
 	public String controllerTemplatePath;
 	public String viewTemplatePath;
-	public List<Property> properties;
+	
+	// form elements that we render in the view
+	public List<FormElement> formElements;
 	public ModelType modelType;
+	
+	private ViewScaffoldingStrategy scaffoldingStrategy;
 
 	public Entity(Class<?> clazz)
 	{
@@ -48,13 +53,14 @@ public class Entity
 		this.controllerName = name + JavaExtensions.pluralize(2);
 		this.controllerTemplatePath = "app" + File.separator + "views" + File.separator + controllerName + File.separator;
 		this.viewTemplatePath = "app" + File.separator + "views" + File.separator + "scaffold" + File.separator + "views" + File.separator + "Entity" +  File.separator;
+		this.modelType = type(clazz);
+		this.scaffoldingStrategy = modelType.getViewScaffoldingStrategy();
 		Field[] fields = clazz.getDeclaredFields();
-		properties = new ArrayList<Property>();
+		formElements = new ArrayList<FormElement>();
 		for (Field field : fields)
 		{
-			addProperty(field);
+			addFormElement(field);
 		}
-		this.modelType = type(clazz);
 	}
 	
 	// Determine whether this is a play.db.jpa.Model model or an alternative model,
@@ -76,15 +82,15 @@ public class Entity
 		return null;
 	}
 
-	private void addProperty(Field idField)
+	private void addFormElement(Field field)
 	{
-		Property property = new Property(idField);
-		properties.add(property);
+		FormElement FormElement = scaffoldingStrategy.render(field);
+		formElements.add(FormElement);
 	}
 
-	public List<Property> getProperties()
+	public List<FormElement> getFormElements()
 	{
-		return properties;
+		return formElements;
 	}
 
 	public String getControllerName()

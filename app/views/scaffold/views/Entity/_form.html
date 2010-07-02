@@ -1,30 +1,32 @@
-	#{list items:entity.properties, as:'property'}
+	#{list items:entity.formElements, as:'elem'}
 		<div class="row">
 			<div class="label">
-				${property.name}
+				${elem.name}
 			</div>
 			<div class="field">
-				%{ if (property.isCheckbox()) { }%
-					<input type="checkbox" name="entity.${property.name}" ${entity.expressionOpen}entity?.${property.name} ? 'checked' : ''} />
-				%{ } else if (property.isDate()) { }%
+				%{ if (elem.isCheckbox()) { }%
+					<input type="checkbox" name="entity.${elem.name}" ${entity.expressionOpen}entity?.${elem.name} ? 'checked' : ''} />
+				%{ } else if (elem.isDate()) { }%
 					<script type="text/javascript">
 						$(function() {
-							$("#entity_${property.name}").datepicker({ dateFormat: 'yy-mm-dd' } );
+							$("#entity_${elem.name}").datepicker({ dateFormat: 'yy-mm-dd' } );
 						});
 					</script>
 					<!-- TODO: date format needs to come from application.conf -->
-					<input id="entity_${property.name}" type="text" name="entity.${property.name}" value="${entity.expressionOpen}entity?.${property.name}?.format('yyyy-MM-dd')}" size="10" />
-				%{ } else if (property.isSelect()) { }%
-					<select name="entity.${property.name}">
-						#{list property.options, as: 'option'}
+					<input id="entity_${elem.name}" type="text" name="entity.${elem.name}" value="${entity.expressionOpen}entity?.${elem.name}?.format('yyyy-MM-dd')}" size="10" />
+				%{ } else if (elem.isSelect()) { }%
+					<select name="entity.${elem.name}">
+						#{list elem.options, as: 'option'}
 							<option value="${option}" 
-								${entity.expressionOpen}(entity?.${property.name}?.name() == "${option}") ? 'selected' : ''}>${option}</option>
+								${entity.expressionOpen}(entity?.${elem.name}?.name() == "${option}") ? 'selected' : ''}>${option}</option>
 						#{/list}
 					</select>
+				%{ } else if (elem.isTextArea()) { }%
+					<textarea name="entity.${elem.name}" rows="10" cols="40">${entity.expressionOpen}entity?.${elem.name}}</textarea>
 				%{ } else { }%
-					<input type="text" name="entity.${property.name}" value="${entity.expressionOpen}entity?.${property.name}}"/>
+					<input type="text" name="entity.${elem.name}" value="${entity.expressionOpen}entity?.${elem.name}}"/>
 				%{ } }%
 			</div>
-			<span class="error">${entity.expressionOpen}errors.forKey('entity.${property.name}')}</span>
+			<span class="error">${entity.expressionOpen}errors.forKey('entity.${elem.name}')}</span>
 		</div>
 	#{/list}
