@@ -12,6 +12,7 @@
 							$("#entity_${property.name}").datepicker({ dateFormat: 'yy-mm-dd' } );
 						});
 					</script>
+					<!-- TODO: date format needs to come from application.conf -->
 					<input id="entity_${property.name}" type="text" name="entity.${property.name}" value="${entity.expressionOpen}entity?.${property.name}?.format('yyyy-MM-dd')}" size="10" />
 				%{ } else if (property.isSelect()) { }%
 					<select name="entity.${property.name}">

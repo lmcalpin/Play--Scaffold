@@ -6,7 +6,9 @@ module.scaffold=C:/Path/To/Play/Modules/scaffold/
 Then create your project:
 play new
 
-Then add some JPA or Siena models. The model entities have to extend play.db.jpa.Model or siena.Model.
+Actually, maybe you should create your project first, and then edit its application.conf.
+
+Now, add some JPA or Siena models. The model entities have to extend play.db.jpa.Model or siena.Model.
 
 Then run:
 play scaffold:gen --overwrite
