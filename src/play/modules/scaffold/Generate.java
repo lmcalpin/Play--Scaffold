@@ -47,7 +47,7 @@ public class Generate
 		{
 			if (arg.startsWith("--"))
 			{
-				if (arg.equals("--overwrite"))
+				if (arg.equalsIgnoreCase("--overwrite"))
 				{
 					Logger.info("--overwrite: We will force overwrite target files");
 					forceOverwrite = true;

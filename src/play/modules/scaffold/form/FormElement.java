@@ -4,9 +4,9 @@ import java.util.List;
 
 public class FormElement
 {
-	public String name;
-	public FormElementType type;
-	public List<String> options;
+	private String name;
+	private FormElementType type;
+	private List<String> options;
 
 	public FormElement(String name, FormElementType type)
 	{

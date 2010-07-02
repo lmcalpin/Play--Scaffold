@@ -36,15 +36,14 @@ import play.templates.JavaExtensions;
  */
 public class Entity
 {
-	public String name;
-	public String controllerName;
-	public String controllerTemplatePath;
-	public String viewTemplatePath;
+	String name;
+	String controllerName;
+	String controllerTemplatePath;
+	String viewTemplatePath;
+	ModelType modelType;
 	
 	// form elements that we render in the view
-	public List<FormElement> formElements;
-	public ModelType modelType;
-	
+	private List<FormElement> formElements;
 	private ViewScaffoldingStrategy scaffoldingStrategy;
 
 	public Entity(Class<?> clazz)
