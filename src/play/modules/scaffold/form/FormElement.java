@@ -57,6 +57,11 @@ public class FormElement
 		return type == FormElementType.TEXT;
 	}
 	
+	public boolean isHidden()
+	{
+		return type == FormElementType.HIDDEN;
+	}
+	
 	public boolean isTextArea()
 	{
 		return type == FormElementType.TEXTAREA;

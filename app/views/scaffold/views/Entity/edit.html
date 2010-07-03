@@ -4,7 +4,6 @@ ${"#{"}extends 'main.html' /}
 
 <div class="entity">
 ${"#{"}form @${entity.controllerName}.update(), id:'createForm'}
-	<input type="hidden" name="entity.id" value="${entity.expressionOpen}entity.id}" />
 	#{include 'scaffold/views/Entity/_form.html' /}
 	<input type="submit" name="submit" value="Save" />
 ${"#{/"}form}

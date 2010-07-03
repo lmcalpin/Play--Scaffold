@@ -20,12 +20,14 @@ package play.modules.scaffold.entity;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
 import play.modules.scaffold.form.FormElement;
 import play.modules.scaffold.strategy.ViewScaffoldingStrategy;
 import play.modules.scaffold.utils.Classes;
+import play.modules.scaffold.utils.Filterable;
 import play.templates.JavaExtensions;
 
 /**
@@ -54,12 +56,31 @@ public class Entity
 		this.viewTemplatePath = "app" + File.separator + "views" + File.separator + "scaffold" + File.separator + "views" + File.separator + "Entity" +  File.separator;
 		this.modelType = type(clazz);
 		this.scaffoldingStrategy = modelType.getViewScaffoldingStrategy();
-		Field[] fields = clazz.getDeclaredFields();
+		List<Field> fields = fields(clazz);
 		formElements = new ArrayList<FormElement>();
 		for (Field field : fields)
 		{
 			addFormElement(field);
 		}
+	}
+	
+	public static List<Field> fields(Class<?> clazz)
+	{
+		final List<Field> fields = Classes.fields(clazz);
+		Filterable.remove(fields, new Filterable<Field>() {
+
+			@Override
+			public boolean filter(Field input)
+			{
+				int modifiers = input.getModifiers();
+				if (Modifier.isTransient(modifiers) ||
+					Modifier.isStatic(modifiers))
+					return true;
+				return false;
+			}
+			
+		});
+		return fields;
 	}
 	
 	// Determine whether this is a play.db.jpa.Model model or an alternative model,

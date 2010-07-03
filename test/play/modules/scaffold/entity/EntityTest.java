@@ -1,4 +1,4 @@
-package play.modules.scaffold.utils;
+package play.modules.scaffold.entity;
 
 import static org.junit.Assert.*;
 
@@ -11,20 +11,12 @@ import org.junit.Test;
 import play.modules.scaffold.entity.MyEntity;
 import play.modules.scaffold.entity.MyPolymorphicEntity;
 
-public class ClassesTest
+public class EntityTest
 {
-	@Test
-	public void testSuperClasses()
-	{
-		List<String> classes = Classes.superclasses(MyEntity.class);
-		assertTrue(classes.contains("java.lang.Object"));
-		assertTrue(classes.contains("play.db.jpa.Model"));
-	}
-	
 	@Test
 	public void testFields()
 	{
-		List<Field> fields = Classes.fields(MyPolymorphicEntity.class);
+		List<Field> fields = Entity.fields(MyPolymorphicEntity.class);
 		List<String> fieldNames = new ArrayList<String>();
 		for (Field field : fields)
 		{
@@ -33,6 +25,6 @@ public class ClassesTest
 		assertTrue(fieldNames.contains("aLongString")); // from MyPolymorphicEntity
 		assertTrue(fieldNames.contains("anEnum")); // from MyEntity
 		assertTrue(fieldNames.contains("id")); // from Model
-		assertTrue(fieldNames.contains("willBeSaved")); // from JPASupport
+		assertFalse(fieldNames.contains("willBeSaved")); // from JPASupport && transient
 	}
 }

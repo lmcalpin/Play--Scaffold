@@ -1,7 +1,9 @@
 	#{list items:entity.formElements, as:'elem'}
 		<div class="row">
 			<div class="label">
-				${elem.name}
+				#{ifnot elem.isHidden()}
+					${elem.name}
+				#{/ifnot}
 			</div>
 			<div class="field">
 				%{ if (elem.isCheckbox()) { }%
@@ -23,6 +25,8 @@
 					</select>
 				%{ } else if (elem.isTextArea()) { }%
 					<textarea name="entity.${elem.name}" rows="10" cols="40">${entity.expressionOpen}entity?.${elem.name}}</textarea>
+				%{ } else if (elem.isHidden()) { }%
+					<input type="hidden" name="entity.${elem.name}" value="${entity.expressionOpen}entity?.${elem.name}}"/>
 				%{ } else { }%
 					<input type="text" name="entity.${elem.name}" value="${entity.expressionOpen}entity?.${elem.name}}"/>
 				%{ } }%

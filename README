@@ -1,4 +1,4 @@
-Welcome to the Play--Scaffold wiki!
+*Play--Scaffold*
 
 To use, reference the module from your application.conf:
 module.scaffold=C:/Path/To/Play/Modules/scaffold/

@@ -20,6 +20,9 @@ public class JpaViewScaffoldingStrategy extends DefaultViewScaffoldingStrategy
 		if (defaultValue.getType() == FormElementType.TEXT && annotations.contains("javax.persistence.Lob"))
 		{
 			return new FormElement(defaultValue, FormElementType.TEXTAREA);
+		} if (annotations.contains("javax.persistence.Id"))
+		{
+			return new FormElement(defaultValue, FormElementType.HIDDEN);
 		}
 		return defaultValue;
 	}
