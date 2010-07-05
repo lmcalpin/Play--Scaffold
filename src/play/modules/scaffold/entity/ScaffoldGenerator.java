@@ -198,9 +198,9 @@ public class ScaffoldGenerator
 
 	public static void invokeTemplate(VirtualFile templateFile, File targetFile, Map<String, Object> args)
 	{
-		Template template = TemplateCompiler.compile(templateFile);
 		try
 		{
+			Template template = TemplateCompiler.compile(templateFile);
 			String output = template.render(args);
 			IO.writeContent(output, targetFile);
 		} catch (IOException e)

@@ -24,6 +24,7 @@ import java.util.List;
 import play.Logger;
 import play.Play;
 import play.modules.scaffold.entity.Entity;
+import play.modules.scaffold.entity.ModelType;
 import play.modules.scaffold.entity.ScaffoldGenerator;
 
 /**
@@ -66,7 +67,7 @@ public class Generate
 			// If this model is of a supported type, queue it up
 			// so the ScaffoldGenerator will create its controller
 			// and views.
-			if (Entity.type(clazz) != null)
+			if (ModelType.forClass(clazz) != null)
 			{
 				Entity entity = new Entity(clazz);
 				generator.addEntity(entity);

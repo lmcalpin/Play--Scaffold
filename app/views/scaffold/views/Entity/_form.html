@@ -6,31 +6,40 @@
 				#{/ifnot}
 			</div>
 			<div class="field">
-				%{ if (elem.isCheckbox()) { }%
-					<input type="checkbox" name="entity.${elem.name}" ${entity.expressionOpen}entity?.${elem.name} ? 'checked' : ''} />
-				%{ } else if (elem.isDate()) { }%
+				#{if elem.isCheckbox() }
+					<input type="checkbox" name="entity.${elem.name}"
+						#{generateExpression entity:elem.name, expr:'entity?.$1 ? "checked":""' /}
+						/>
+				#{/if}
+				#{elseif elem.isDate()}
 					<script type="text/javascript">
 						$(function() {
 							$("#entity_${elem.name}").datepicker({ dateFormat: 'yy-mm-dd' } );
 						});
 					</script>
 					<!-- TODO: date format needs to come from application.conf -->
-					<input id="entity_${elem.name}" type="text" name="entity.${elem.name}" value="${entity.expressionOpen}entity?.${elem.name}?.format('yyyy-MM-dd')}" size="10" />
-				%{ } else if (elem.isSelect()) { }%
+					<input id="entity_${elem.name}" type="text" name="entity.${elem.name}" 
+						value="#{generateExpression entity:elem.name, expr:'entity?.$1?.format(\'yyyy-MM-dd\')' /}"
+						size="10" />
+				#{/elseif}
+				#{elseif elem.isSelect()}
 					<select name="entity.${elem.name}">
 						#{list elem.options, as: 'option'}
 							<option value="${option}" 
-								${entity.expressionOpen}(entity?.${elem.name}?.name() == "${option}") ? 'selected' : ''}>${option}</option>
+								#{generateExpression entity:[elem.name,option], expr:'(entity?.$1?.name() == "$2") ? "selected":""' /}>${option}</option>
 						#{/list}
 					</select>
-				%{ } else if (elem.isTextArea()) { }%
-					<textarea name="entity.${elem.name}" rows="10" cols="40">${entity.expressionOpen}entity?.${elem.name}}</textarea>
-				%{ } else if (elem.isHidden()) { }%
-					<input type="hidden" name="entity.${elem.name}" value="${entity.expressionOpen}entity?.${elem.name}}"/>
-				%{ } else { }%
-					<input type="text" name="entity.${elem.name}" value="${entity.expressionOpen}entity?.${elem.name}}"/>
-				%{ } }%
+				#{/elseif}
+				#{elseif elem.isTextArea()}
+					<textarea name="entity.${elem.name}" rows="10" cols="40">#{generateExpression entity:elem.name, expr:'entity?.$1' /}</textarea>
+				#{/elseif}
+				#{elseif elem.isHidden()}
+					<input type="hidden" name="entity.${elem.name}" value="#{generateExpression entity:elem.name, expr:'entity?.$1' /}"/>
+				#{/elseif}
+				#{else}
+					<input type="text" name="entity.${elem.name}" value="#{generateExpression entity:elem.name, expr:'entity?.$1' /}"/>
+				#{/else}
 			</div>
-			<span class="error">${entity.expressionOpen}errors.forKey('entity.${elem.name}')}</span>
+			<span class="error">#{generateExpression entity:elem.name, expr:'errors.forKey(\'entity.$1\')' /}</span>
 		</div>
 	#{/list}

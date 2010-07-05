@@ -9,7 +9,7 @@ ${"#{"}extends 'main.html' /}
 			${elem.name}:
 		</span>
 		<span class="value">
-			${entity.expressionOpen}entity.${elem.name}}
+			#{generateExpression entity:elem.name, expr:'entity.$1' /}
 		</span>
 	</div>
 #{/list}
