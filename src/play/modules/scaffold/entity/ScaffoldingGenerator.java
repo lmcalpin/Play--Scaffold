@@ -43,7 +43,7 @@ import play.vfs.VirtualFile;
  * 
  * @author Lawrence McAlpin
  */
-public class ScaffoldGenerator
+public class ScaffoldingGenerator
 {
 	private static final String CREATE_HTML = "create.html";
 	private static final String SHOW_HTML = "show.html";
@@ -55,7 +55,7 @@ public class ScaffoldGenerator
 	private List<Entity> entities = new ArrayList<Entity>();
 	private boolean forceOverwrite;
 
-	public ScaffoldGenerator()
+	public ScaffoldingGenerator()
 	{
 
 	}

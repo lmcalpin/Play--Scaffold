@@ -25,7 +25,7 @@ import play.Logger;
 import play.Play;
 import play.modules.scaffold.entity.Entity;
 import play.modules.scaffold.entity.ModelType;
-import play.modules.scaffold.entity.ScaffoldGenerator;
+import play.modules.scaffold.entity.ScaffoldingGenerator;
 
 /**
  * Processes the scaffold:gen command.  This command generates the scaffolding
@@ -36,6 +36,12 @@ import play.modules.scaffold.entity.ScaffoldGenerator;
  */
 public class Generate
 {
+	private static final String EXCLUDE = "--exclude=";
+	private static final String INCLUDE = "--include=";
+	private static final String OVERWRITE = "--overwrite";
+	
+	private static final String INVALID_MODELPATTERN = "Invalid pattern, provide a text string with optional '*' wildcard";
+
 	public static void main(String[] args) throws Exception
 	{
 		// initialize Play!
@@ -43,15 +49,39 @@ public class Generate
 		Play.init(root, System.getProperty("play.id", ""));
 		Thread.currentThread().setContextClassLoader(Play.classloader);
 		
+		// default options
 		boolean forceOverwrite = false;
+		String includeRegEx = null;
+		String excludeRegEx = null;
+		
+		// interpret command line arguments
 		for (String arg : args)
 		{
+			String lowerArg = arg.toLowerCase();
 			if (arg.startsWith("--"))
 			{
-				if (arg.equalsIgnoreCase("--overwrite"))
+				if (lowerArg.equals(OVERWRITE))
 				{
-					Logger.info("--overwrite: We will force overwrite target files");
 					forceOverwrite = true;
+					Logger.info("--overwrite: We will force overwrite target files");
+				} else if (lowerArg.startsWith(INCLUDE)) {
+					includeRegEx = arg.substring(INCLUDE.length());
+					if (includeRegEx.isEmpty())
+					{
+						Logger.warn(INCLUDE + ": " + INVALID_MODELPATTERN);
+						System.exit(-1);
+					}
+					Logger.info("--include: Including files that match: %s", includeRegEx);
+				} else if (lowerArg.startsWith(EXCLUDE)) {
+					excludeRegEx = arg.substring(EXCLUDE.length());
+					if (excludeRegEx.isEmpty())
+					{
+						Logger.warn(EXCLUDE + ": " + INVALID_MODELPATTERN);
+						System.exit(-1);
+					}
+					Logger.info("--exclude: Skipping files that match: %s", excludeRegEx);
+				} else {
+					Logger.warn("Invalid argument: %s", arg);
 				}
 			}
 		}
@@ -60,7 +90,7 @@ public class Generate
 		// Currently, we only support classes that extend the 
 		// play.db.jpa.Model or siena.Model classes. 
 		List<Class> classes = Play.classloader.getAllClasses();
-		ScaffoldGenerator generator = new ScaffoldGenerator();
+		ScaffoldingGenerator generator = new ScaffoldingGenerator();
 		generator.setForceOverwrite(forceOverwrite);
 		for (Class clazz : classes)
 		{
@@ -69,10 +99,53 @@ public class Generate
 			// and views.
 			if (ModelType.forClass(clazz) != null)
 			{
-				Entity entity = new Entity(clazz);
-				generator.addEntity(entity);
+				String simpleName = clazz.getSimpleName();
+				boolean includeEntity = false;
+				// by default, include all entities if no --include= value is
+				// specified
+				if (includeRegEx == null)
+				{
+					includeEntity = true;
+				}
+				// if an --include= value is specified, include only the models
+				// that match
+				if (includeRegEx != null && match(simpleName, includeRegEx))
+				{
+					includeEntity = true;
+				}
+				// always exclude models that match the --exclude= parameter
+				if (excludeRegEx != null && match(simpleName, excludeRegEx))
+				{
+					includeEntity = false;
+				}
+				if (includeEntity)
+				{
+					Entity entity = new Entity(clazz);
+					generator.addEntity(entity);
+				} else {
+					Logger.info("Skipping %s", simpleName);
+				}
 			}
 		}
 		generator.generate();
 	}
+
+	// Does simple matching: you can add an asterisk to match "any"
+	// text. Matching is case insensitive.
+	public static boolean match(String text, String pattern)
+    {
+		String normalizedText = text.toLowerCase();
+		String normalizedPattern = pattern.toLowerCase();
+        String [] subsections = normalizedPattern.split("\\*");
+        for (String subsection : subsections)
+        {
+            int idx = normalizedText.indexOf(subsection);
+            if(idx == -1)
+            {
+                return false;
+            }
+            normalizedText = normalizedText.substring(idx + subsection.length());
+        }
+        return true;
+    }
 }
