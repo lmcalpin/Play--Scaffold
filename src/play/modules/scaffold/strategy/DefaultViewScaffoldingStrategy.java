@@ -44,7 +44,7 @@ public class DefaultViewScaffoldingStrategy implements ViewScaffoldingStrategy
 		{
 			type = FormElementType.SELECT;
 			Class<Enum> enumClass = (Class<Enum>)classType;
-			options = Enums.asList(Enums.values(enumClass));
+			options = Enums.list(Enums.values(enumClass));
 		} else
 		{
 			type = FormElementType.TEXT;

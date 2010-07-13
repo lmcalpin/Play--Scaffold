@@ -64,6 +64,17 @@ public class Classes
 		return output;
 	}
 
+	public static List<String> annotations(Class<?> clazz)
+	{
+		List<String> output = new ArrayList<String>();
+		Annotation[] annotations = clazz.getAnnotations();
+		for (Annotation ann : annotations)
+		{
+			output.add(ann.annotationType().getName());
+		}
+		return output;
+	}
+
 	private static void foreachSuperclass(Class<?> clazz, boolean skipCurrent, Executable<Class<?>> block)
 	{
 		Class<?> superclass = clazz;

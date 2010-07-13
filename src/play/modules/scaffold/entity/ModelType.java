@@ -18,6 +18,8 @@
  */
 package play.modules.scaffold.entity;
 
+import java.util.List;
+
 import play.modules.scaffold.strategy.JpaViewScaffoldingStrategy;
 import play.modules.scaffold.strategy.SienaViewScaffoldingStrategy;
 import play.modules.scaffold.strategy.ViewScaffoldingStrategy;
@@ -26,6 +28,7 @@ import play.modules.scaffold.utils.Classes;
 public enum ModelType
 {
 	PLAY_JPA,
+	PURE_JPA,
 	SIENA;
 	
 	public ViewScaffoldingStrategy getViewScaffoldingStrategy() 
@@ -33,6 +36,7 @@ public enum ModelType
 		switch(this)
 		{
 		case PLAY_JPA: return new JpaViewScaffoldingStrategy();
+		case PURE_JPA: return new JpaViewScaffoldingStrategy();
 		case SIENA: return new SienaViewScaffoldingStrategy();
 		}
 		return null;
@@ -45,16 +49,28 @@ public enum ModelType
 	// Then, we simply see if the class name for our database support class is in that list.
 	public static ModelType forClass(Class<?> clazz)
 	{
-		if (Classes.superclasses(clazz).contains("play.db.jpa.Model"))
+		List<String> superclasses = Classes.superclasses(clazz);
+		List<String> annotations = Classes.annotations(clazz);
+		if (superclasses.contains("play.db.jpa.Model"))
 		{
 			return ModelType.PLAY_JPA;
 		}
-		if (Classes.superclasses(clazz).contains("siena.Model"))
+		if (annotations.contains("javax.persistence.Entity"))
+		{
+			return ModelType.PURE_JPA;
+		}
+		if (superclasses.contains("siena.Model"))
 		{
 			return ModelType.SIENA;
 		}
 		// unsupported model
 		return null;
 	}
-
+	
+	public boolean getUsesPlayModelSupport()
+	{
+		if (this == ModelType.PURE_JPA)
+			return false;
+		return true;
+	}
 }

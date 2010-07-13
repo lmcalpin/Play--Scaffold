@@ -47,7 +47,7 @@ public class Entity
 	// form elements that we render in the view
 	private List<FormElement> formElements;
 	private ViewScaffoldingStrategy scaffoldingStrategy;
-
+	
 	public Entity(Class<?> clazz)
 	{
 		this.name = clazz.getSimpleName();
@@ -56,8 +56,9 @@ public class Entity
 		this.viewTemplatePath = "app" + File.separator + "views" + File.separator + "scaffold" + File.separator + "views" + File.separator + "Entity" +  File.separator;
 		this.modelType = ModelType.forClass(clazz);
 		this.scaffoldingStrategy = modelType.getViewScaffoldingStrategy();
+		this.formElements = new ArrayList<FormElement>();
+		
 		List<Field> fields = fields(clazz);
-		formElements = new ArrayList<FormElement>();
 		for (Field field : fields)
 		{
 			addFormElement(field);
@@ -102,5 +103,10 @@ public class Entity
 	public String getName()
 	{
 		return name;
+	}
+	
+	public boolean getUsesPlayModelSupport()
+	{
+		return modelType.getUsesPlayModelSupport();
 	}
 }

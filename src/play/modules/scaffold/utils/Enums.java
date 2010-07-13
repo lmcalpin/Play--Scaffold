@@ -26,7 +26,7 @@ import java.util.List;
 public class Enums
 {
 
-	public static<T extends Enum<T>> List<String> asList(T[] values)
+	public static<T extends Enum<T>> List<String> list(T[] values)
 	{
 		List<String> returnMe = new ArrayList<String>();
 		for (T value : values)
