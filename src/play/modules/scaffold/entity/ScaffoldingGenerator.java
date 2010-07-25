@@ -20,6 +20,7 @@ package play.modules.scaffold.entity;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -196,11 +197,48 @@ public class ScaffoldingGenerator
 		}
 	}
 
+	/**
+	 * TemplateCompiler was a concrete class in Play 1.0.  In Play 1.1, it became an
+	 * abstract class to better support alternative template engines.  GroovyTemplate
+	 * is the class we use in Play 1.1.
+	 * 
+	 * Because we want to support BOTH Play 1.0 and Play 1.1, we use reflection to
+	 * invoke the correct template compiler.
+	 * 
+	 * @param templateFile
+	 * @param targetFile
+	 * @param args
+	 */
 	public static void invokeTemplate(VirtualFile templateFile, File targetFile, Map<String, Object> args)
 	{
 		try
 		{
-			Template template = TemplateCompiler.compile(templateFile);
+			String version = Play.version;
+			Object templateCompiler = null;
+			Method compile = null;
+			if (version.startsWith("1.0")) 
+			{
+				Class templateCompilerClass = Class.forName("play.templates.TemplateCompiler");
+				if (templateCompilerClass != null)
+				{
+					compile = templateCompilerClass.getMethod("compile", VirtualFile.class);
+				}
+				templateCompiler = templateCompilerClass;
+			} else {
+				Class templateCompilerClass = Class.forName("play.templates.GroovyTemplateCompiler");
+				if (templateCompilerClass != null)
+				{
+					compile = templateCompilerClass.getMethod("compile", VirtualFile.class);
+				}
+				templateCompiler = templateCompilerClass.newInstance();
+			}
+			if (templateCompiler == null || templateCompiler == null)
+			{
+				Logger.error("Error looking up the template compiler method");
+				System.exit(-1);
+			}
+			//Template template = TemplateCompiler.compile(templateFile);
+			Template template = (Template)compile.invoke(templateCompiler, templateFile);
 			String output = template.render(args);
 			IO.writeContent(output, targetFile);
 		} catch (IOException e)

@@ -24,11 +24,12 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
+import play.modules.scaffold.Scaffolding;
 import play.modules.scaffold.form.FormElement;
 import play.modules.scaffold.strategy.ViewScaffoldingStrategy;
 import play.modules.scaffold.utils.Classes;
 import play.modules.scaffold.utils.Filterable;
-import play.templates.JavaExtensions;
+import play.modules.scaffold.utils.Strings;
 
 /**
  * Entity holds information related to a domain model entity that we intend to process.
@@ -38,6 +39,7 @@ import play.templates.JavaExtensions;
  */
 public class Entity
 {
+	String packageName;
 	String name;
 	String controllerName;
 	String controllerTemplatePath;
@@ -51,23 +53,30 @@ public class Entity
 	public Entity(Class<?> clazz)
 	{
 		this.name = clazz.getSimpleName();
-		this.controllerName = name + JavaExtensions.pluralize(2);
+		this.packageName = Classes.getPackageName(clazz);
+		Scaffolding scaffolding = clazz.getAnnotation(Scaffolding.class);
+		String controllerOverride = null;
+		if (scaffolding != null)
+		{
+			controllerOverride = scaffolding.controller();
+		}
+		this.controllerName = controllerOverride != null ? controllerOverride : Strings.pluralize(name);
 		this.controllerTemplatePath = "app" + File.separator + "views" + File.separator + controllerName + File.separator;
 		this.viewTemplatePath = "app" + File.separator + "views" + File.separator + "scaffold" + File.separator + "views" + File.separator + "Entity" +  File.separator;
 		this.modelType = ModelType.forClass(clazz);
 		this.scaffoldingStrategy = modelType.getViewScaffoldingStrategy();
 		this.formElements = new ArrayList<FormElement>();
 		
-		List<Field> fields = fields(clazz);
+		List<Field> fields = publicFields(clazz);
 		for (Field field : fields)
 		{
 			addFormElement(field);
 		}
 	}
 	
-	public static List<Field> fields(Class<?> clazz)
+	public static List<Field> publicFields(Class<?> clazz)
 	{
-		final List<Field> fields = Classes.fields(clazz);
+		final List<Field> fields = Classes.publicFields(clazz);
 		Filterable.remove(fields, new Filterable<Field>() {
 
 			@Override
@@ -103,6 +112,11 @@ public class Entity
 	public String getName()
 	{
 		return name;
+	}
+	
+	public String getPackage()
+	{
+		return packageName;
 	}
 	
 	public boolean getUsesPlayModelSupport()

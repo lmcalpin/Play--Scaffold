@@ -7,4 +7,5 @@ public class MyPolymorphicEntity extends MyEntity
 {
 	@Lob
 	public String aLongString;
+	private String cantSeeMe;
 }

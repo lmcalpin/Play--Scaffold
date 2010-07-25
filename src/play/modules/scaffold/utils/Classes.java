@@ -20,13 +20,14 @@ package play.modules.scaffold.utils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class Classes
 {
-	public static List<Field> fields(Class<?> clazz)
+	public static List<Field> publicFields(Class<?> clazz)
 	{
 		final List<Field> output = new ArrayList<Field>();
 		foreachSuperclass(clazz, false, new Executable<Class<?>>()
@@ -34,7 +35,12 @@ public class Classes
 			public void execute(Class<?> superclass)
 			{
 				Field[] fields = superclass.getDeclaredFields();
-				output.addAll(Arrays.asList(fields));
+				for (Field field : fields) {
+					// include only public fields
+					if (Modifier.isPublic(field.getModifiers())) {
+						output.add(field);
+					}
+				}
 			}
 		});
 		return output;
@@ -74,7 +80,7 @@ public class Classes
 		}
 		return output;
 	}
-
+	
 	private static void foreachSuperclass(Class<?> clazz, boolean skipCurrent, Executable<Class<?>> block)
 	{
 		Class<?> superclass = clazz;
@@ -92,4 +98,14 @@ public class Classes
 		} while (superclass != null);
 	}
 
+	public static String getPackageName(Class<?> clazz)
+	{
+		String fullName = clazz.getName();
+		String packageName = "";
+		int subpackageIdx = fullName.lastIndexOf('.');
+		if (subpackageIdx >= 0) {
+			packageName = fullName.substring(0, subpackageIdx);
+		}
+		return packageName;
+	}
 }
