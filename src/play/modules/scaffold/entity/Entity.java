@@ -32,95 +32,147 @@ import play.modules.scaffold.utils.Filterable;
 import play.modules.scaffold.utils.Strings;
 
 /**
- * Entity holds information related to a domain model entity that we intend to process.
- * For each entity, we generate a controller and basic CRUD view templates.
+ * Entity holds information related to a domain model entity that we intend to
+ * process. For each entity, we generate a controller and basic CRUD view
+ * templates.
  * 
  * @author Lawrence McAlpin
  */
-public class Entity
-{
-	String packageName;
-	String name;
-	String controllerName;
-	String controllerTemplatePath;
-	String viewTemplatePath;
-	ModelType modelType;
-	
+public class Entity {
+	private String packageName;
+	private String name;
+	private String controllerName;
+	private String controllerTemplatePath;
+	private String viewTemplatePath;
+	private ModelType modelType;
+
 	// form elements that we render in the view
 	private List<FormElement> formElements;
 	private ViewScaffoldingStrategy scaffoldingStrategy;
-	
-	public Entity(Class<?> clazz)
-	{
+
+	public Entity(Class<?> clazz) {
 		this.name = clazz.getSimpleName();
 		this.packageName = Classes.getPackageName(clazz);
 		Scaffolding scaffolding = clazz.getAnnotation(Scaffolding.class);
 		String controllerOverride = null;
-		if (scaffolding != null)
-		{
+		if (scaffolding != null) {
 			controllerOverride = scaffolding.controller();
 		}
-		this.controllerName = controllerOverride != null ? controllerOverride : Strings.pluralize(name);
-		this.controllerTemplatePath = "app" + File.separator + "views" + File.separator + controllerName + File.separator;
-		this.viewTemplatePath = "app" + File.separator + "views" + File.separator + "scaffold" + File.separator + "views" + File.separator + "Entity" +  File.separator;
+		this.controllerName = controllerOverride != null ? controllerOverride
+				: Strings.pluralize(name);
+		this.controllerTemplatePath = "app" + File.separator + "views"
+				+ File.separator + controllerName + File.separator;
+		this.viewTemplatePath = "app" + File.separator + "views"
+				+ File.separator + "scaffold" + File.separator + "views"
+				+ File.separator + "Entity" + File.separator;
 		this.modelType = ModelType.forClass(clazz);
 		this.scaffoldingStrategy = modelType.getViewScaffoldingStrategy();
 		this.formElements = new ArrayList<FormElement>();
-		
+
 		List<Field> fields = publicFields(clazz);
-		for (Field field : fields)
-		{
+		for (Field field : fields) {
 			addFormElement(field);
 		}
 	}
-	
-	public static List<Field> publicFields(Class<?> clazz)
-	{
+
+	public static List<Field> publicFields(Class<?> clazz) {
 		final List<Field> fields = Classes.publicFields(clazz);
 		Filterable.remove(fields, new Filterable<Field>() {
 
 			@Override
-			public boolean filter(Field input)
-			{
+			public boolean filter(Field input) {
 				int modifiers = input.getModifiers();
-				if (Modifier.isTransient(modifiers) ||
-					Modifier.isStatic(modifiers))
+				if (Modifier.isTransient(modifiers)
+						|| Modifier.isStatic(modifiers))
 					return true;
 				return false;
 			}
-			
+
 		});
 		return fields;
 	}
-	
-	private void addFormElement(Field field)
-	{
-		FormElement FormElement = scaffoldingStrategy.render(field);
-		formElements.add(FormElement);
+
+	private void addFormElement(Field field) {
+		FormElement formElement = scaffoldingStrategy.render(field);
+		if (formElement != null) {
+			formElements.add(formElement);
+		}
 	}
 
-	public List<FormElement> getFormElements()
-	{
+	public List<FormElement> getFormElements() {
 		return formElements;
 	}
 
-	public String getControllerName()
-	{
+	public String getControllerName() {
 		return controllerName;
 	}
 
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
-	
-	public String getPackage()
-	{
+
+	public String getPackageName() {
 		return packageName;
 	}
-	
-	public boolean getUsesPlayModelSupport()
-	{
+
+	public String getControllerTemplatePath() {
+		return controllerTemplatePath;
+	}
+
+	public String getViewTemplatePath() {
+		return viewTemplatePath;
+	}
+
+	public ModelType getModelType() {
+		return modelType;
+	}
+
+	public ViewScaffoldingStrategy getScaffoldingStrategy() {
+		return scaffoldingStrategy;
+	}
+
+	public String getPackage() {
+		return packageName;
+	}
+
+	public boolean getUsesPlayModelSupport() {
 		return modelType.getUsesPlayModelSupport();
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result
+				+ ((packageName == null) ? 0 : packageName.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Entity other = (Entity) obj;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (packageName == null) {
+			if (other.packageName != null)
+				return false;
+		} else if (!packageName.equals(other.packageName))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Entity [packageName=" + packageName + ", name=" + name + "]";
 	}
 }

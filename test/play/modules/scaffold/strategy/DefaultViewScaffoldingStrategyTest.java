@@ -11,29 +11,29 @@ import org.junit.Test;
 import play.modules.scaffold.entity.MyEntity;
 import play.modules.scaffold.form.FormElement;
 
-public class DefaultViewScaffoldingStrategyTest
-{
+public class DefaultViewScaffoldingStrategyTest {
 	ViewScaffoldingStrategy strategy = new DefaultViewScaffoldingStrategy();
-	
+
 	@Test
-	public void testBooleanPrimitiveRenderedAsCheckbox() throws NoSuchFieldException
-	{
+	public void testBooleanPrimitiveRenderedAsCheckbox()
+			throws NoSuchFieldException {
 		Field field = MyEntity.class.getField("aPrimitiveBoolean");
 		FormElement property = strategy.render(field);
 		assertTrue(property.isCheckbox());
 	}
-	
+
 	@Test
-	public void testBooleanObjectRenderedAsCheckbox() throws NoSuchFieldException
-	{
-		Field field = MyEntity.class.getField("aSlightlyMoreSophisticatedBoolean");
+	public void testBooleanObjectRenderedAsCheckbox()
+			throws NoSuchFieldException {
+		Field field = MyEntity.class
+				.getField("aSlightlyMoreSophisticatedBoolean");
 		FormElement property = strategy.render(field);
 		assertTrue(property.isCheckbox());
 	}
-	
+
 	@Test
-	public void testEnumRenderedAsSelectWithValidValuesAsOptions() throws NoSuchFieldException
-	{
+	public void testEnumRenderedAsSelectWithValidValuesAsOptions()
+			throws NoSuchFieldException {
 		Field field = MyEntity.class.getField("anEnum");
 		FormElement property = strategy.render(field);
 		assertTrue(property.isSelect());

@@ -18,7 +18,6 @@
  */
 package play.modules.scaffold.form;
 
-public enum FormElementType
-{
+public enum FormElementType {
 	TEXT, CHECKBOX, SELECT, DATE, TEXTAREA, HIDDEN;
 }

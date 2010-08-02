@@ -20,73 +20,60 @@ package play.modules.scaffold.form;
 
 import java.util.List;
 
-public class FormElement
-{
+public class FormElement {
 	private String name;
 	private FormElementType type;
 	private List<String> options;
 
-	public FormElement(String name, FormElementType type)
-	{
+	public FormElement(String name, FormElementType type) {
 		this(name, type, null);
 	}
 
-	public FormElement(String name, FormElementType type, List<String> options)
-	{
+	public FormElement(String name, FormElementType type, List<String> options) {
 		this.name = name;
 		this.type = type;
 		this.options = options;
 	}
 
-	public FormElement(FormElement copy, FormElementType type)
-	{
+	public FormElement(FormElement copy, FormElementType type) {
 		this.name = copy.name;
 		this.options = copy.options;
 		this.type = type;
 	}
-	
-	public String getName() 
-	{
+
+	public String getName() {
 		return name;
 	}
-	
-	public FormElementType getType()
-	{
+
+	public FormElementType getType() {
 		return type;
 	}
 
-	public boolean isCheckbox()
-	{
+	public boolean isCheckbox() {
 		return type == FormElementType.CHECKBOX;
 	}
-	
-	public boolean isSelect()
-	{
+
+	public boolean isSelect() {
 		return type == FormElementType.SELECT;
 	}
-	
-	public boolean isDate()
-	{
+
+	public boolean isDate() {
 		return type == FormElementType.DATE;
 	}
-	
-	public boolean isText()
-	{
+
+	public boolean isText() {
 		return type == FormElementType.TEXT;
 	}
-	
-	public boolean isHidden()
-	{
+
+	public boolean isHidden() {
 		return type == FormElementType.HIDDEN;
 	}
-	
-	public boolean isTextArea()
-	{
+
+	public boolean isTextArea() {
 		return type == FormElementType.TEXTAREA;
 	}
-	
-	public List<String> getOptions()
-	{
+
+	public List<String> getOptions() {
 		return options;
 	}
 }

@@ -1,11 +1,16 @@
 package controllers;
 
 import java.util.List;
-import models.${entity.name};
+import ${entity.package}.${entity.name};
 import play.mvc.Controller;
 import play.data.validation.Validation;
+import play.data.validation.Valid;
 import play.db.jpa.JPA;
+#{if includeLogin}
+import play.mvc.With;
 
+@With(Secure.class)
+#{/if}
 public class ${entity.controllerName} extends Controller {
 	public static void index() {
 		List<${entity.name}> entities = JPA.em().createQuery("FROM " + ${entity.name}.class.getSimpleName()).getResultList();
@@ -31,8 +36,9 @@ public class ${entity.controllerName} extends Controller {
 	}
 	
 	public static void save(${entity.name} entity) {
-		if (Validation.hasErrors()) {
+		if (validation.hasErrors()) {
 			flash.error("Validation error");
+      validation.keep();
 			create(entity);
 		}
 		JPA.em().persist(entity);
@@ -41,8 +47,9 @@ public class ${entity.controllerName} extends Controller {
 	}
 
 	public static void update(${entity.name} entity) {
-		if (Validation.hasErrors()) {
+		if (validation.hasErrors()) {
 			flash.error("Validation error");
+      validation.keep();
 			edit(entity);
 		}
 		JPA.em().merge(entity);

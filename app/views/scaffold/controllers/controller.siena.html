@@ -1,11 +1,16 @@
 package controllers;
 
 import java.util.List;
-import models.${entity.name};
+import ${entity.package}.${entity.name};
 import play.mvc.Controller;
 import play.data.validation.Validation;
+import play.data.validation.Valid;
 import siena.Model;
+#{if includeLogin}
+import play.mvc.With;
 
+@With(Secure.class)
+#{/if}
 public class ${entity.controllerName} extends Controller {
 	public static void index() {
 		List<${entity.name}> entities = Model.all(${entity.name}.class).fetch();
@@ -32,9 +37,10 @@ public class ${entity.controllerName} extends Controller {
 		index();
 	}
 	
-	public static void save(${entity.name} entity) {
+	public static void save(@Valid ${entity.name} entity) {
 		if (Validation.hasErrors()) {
 			flash.error("Validation error");
+      validation.keep();
 			create(entity);
 		}
 		entity.insert();
@@ -42,9 +48,10 @@ public class ${entity.controllerName} extends Controller {
 		index();
 	}
 
-	public static void update(${entity.name} entity) {
+	public static void update(@Valid ${entity.name} entity) {
 		if (Validation.hasErrors()) {
 			flash.error("Validation error");
+      validation.keep();
 			edit(entity.id);
 		}
 		entity.update();

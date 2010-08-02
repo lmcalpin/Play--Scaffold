@@ -1,6 +1,5 @@
 package play.modules.scaffold.entity;
 
-public enum MyEnum
-{
+public enum MyEnum {
 	ONE, TWO, THREE;
 }

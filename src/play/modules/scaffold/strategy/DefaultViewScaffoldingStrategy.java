@@ -22,33 +22,32 @@ import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.List;
 
+import play.modules.scaffold.ViewScaffoldingHint;
 import play.modules.scaffold.form.FormElement;
 import play.modules.scaffold.form.FormElementType;
 import play.modules.scaffold.utils.Enums;
 
-public class DefaultViewScaffoldingStrategy implements ViewScaffoldingStrategy
-{
+public class DefaultViewScaffoldingStrategy implements ViewScaffoldingStrategy {
 
-	public FormElement render(Field field)
-	{
+	public FormElement render(Field field) {
 		String name = field.getName();
 		FormElementType type;
 		List<String> options = null;
 		Class<?> classType = field.getType();
-		if (classType.equals(Boolean.class) || classType.equals(boolean.class))
-		{
+		if (classType.equals(Boolean.class) || classType.equals(boolean.class)) {
 			type = FormElementType.CHECKBOX;
 		} else if (classType.equals(Date.class)) {
 			type = FormElementType.DATE;
-		} else if (classType.isEnum())
-		{
+		} else if (classType.isEnum()) {
 			type = FormElementType.SELECT;
-			Class<Enum> enumClass = (Class<Enum>)classType;
+			Class<Enum> enumClass = (Class<Enum>) classType;
 			options = Enums.list(Enums.values(enumClass));
-		} else
-		{
+		} else {
 			type = FormElementType.TEXT;
 		}
+		ViewScaffoldingHint formHint = field.getAnnotation(ViewScaffoldingHint.class);
+		if (formHint != null && !formHint.display())
+			return null;
 		return new FormElement(name, type, options);
 	}
 

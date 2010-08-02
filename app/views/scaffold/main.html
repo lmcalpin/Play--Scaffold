@@ -1,35 +1,47 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>#{get 'title' /}</title>
+        <title>${tagOpen}get 'title' /}</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/stylesheets/default.css'}">
-        <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/stylesheets/main.css'}">
-        <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/stylesheets/jquery-ui-1.8.2.custom.css'}">
-        #{get 'moreStyles' /}
-        <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}">
-        <script src="@{'/public/javascripts/jquery-1.4.2.min.js'}" type="text/javascript" charset="utf-8"></script>
-        <script src="@{'/public/javascripts/jquery-ui-1.8.2.custom.min.js'}" type="text/javascript" charset="utf-8"></script>
-        #{get 'moreScripts' /}
+        <link rel="stylesheet" type="text/css" media="screen" href="${actionOpen}'/public/stylesheets/default.css'}">
+        <link rel="stylesheet" type="text/css" media="screen" href="${actionOpen}'/public/stylesheets/main.css'}">
+        <link rel="stylesheet" type="text/css" media="screen" href="${actionOpen}'/public/stylesheets/jquery-ui-1.8.2.custom.css'}">
+        ${tagOpen}get 'moreStyles' /}
+        <link rel="shortcut icon" type="image/png" href="${actionOpen}'/public/images/favicon.png'}">
+        <script src="${actionOpen}'/public/javascripts/jquery-1.4.2.min.js'}" type="text/javascript" charset="utf-8"></script>
+        <script src="${actionOpen}'/public/javascripts/jquery-ui-1.8.2.custom.min.js'}" type="text/javascript" charset="utf-8"></script>
+        ${tagOpen}get 'moreScripts' /}
     </head>
     <body>
 		<div id="header"> 
-		     <a class="title" href="@{Application.index}">~ Your New Application ~</a>
+		     <a class="title" href="${actionOpen}Application.index}">~ ${applicationName} ~</a>
 		</div>
 		<div id="content-container">
+      <div id="menu">
+        #{if includeLogin}
+        <span style="float:right;">
+          ${tagOpen}if session.get("username") == null}
+          <a href="/login">Login</a>
+          ${tagOpen}/if}
+          ${tagOpen}else}
+          <a href="/logout">Logout</a>
+          ${tagOpen}/else}
+        </span>
+        #{/if}
+      </div>
 			<div id="content">
-		        #{if flash.error}
-		            <p class="fError">
-		                <strong>${flash.error}</strong>
-		            </p>
-		        #{/if}
-		        #{if flash.success}
-		            <p class="fSuccess">
-		                <strong>${flash.success}</strong>
-		            </p>
-		        #{/if}
+		        ${tagOpen}if flash.error}
+		            <div class="fError">
+		                <strong>${exprOpen}flash.error}</strong>
+		            </div>
+		        ${tagOpen}/if}
+		        ${tagOpen}if flash.success}
+		            <div class="fSuccess">
+		                <strong>${exprOpen}flash.success}</strong>
+		            </div>
+		        ${tagOpen}/if}
 				
-		        #{doLayout /}
+		        ${tagOpen}doLayout /}
 		    </div>
 		</div>
 		<div id="footer">

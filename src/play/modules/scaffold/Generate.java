@@ -25,101 +25,104 @@ import play.Logger;
 import play.Play;
 import play.modules.scaffold.entity.Entity;
 import play.modules.scaffold.entity.ModelType;
-import play.modules.scaffold.entity.ScaffoldingGenerator;
 
 /**
- * Processes the scaffold:gen command.  This command generates the scaffolding
+ * Processes the scaffold:gen command. This command generates the scaffolding
  * for a project, creating a rudimentary Application.index template, layout, and
  * basic CRUD screens.
  * 
  * @author Lawrence McAlpin
  */
-public class Generate
-{
+public class Generate {
 	private static final String EXCLUDE = "--exclude=";
 	private static final String INCLUDE = "--include=";
 	private static final String OVERWRITE = "--overwrite";
-	
+	private static final String WITH_LAYOUT = "--with-layout";
+	private static final String WITH_LOGIN = "--with-login";
+	private static final String ALL = "--all";
+
 	private static final String INVALID_MODELPATTERN = "Invalid pattern, provide a text string with optional '*' wildcard";
 
-	public static void main(String[] args) throws Exception
-	{
+	public static void main(String[] args) throws Exception {
 		// initialize Play!
 		File root = new File(System.getProperty("application.path"));
 		Play.init(root, System.getProperty("play.id", ""));
 		Thread.currentThread().setContextClassLoader(Play.classloader);
-		
+
 		// default options
 		boolean forceOverwrite = false;
 		String includeRegEx = null;
 		String excludeRegEx = null;
-		
+		boolean includeLayout = false;
+		boolean includeLogin = false;
+
 		// interpret command line arguments
-		for (String arg : args)
-		{
+		for (String arg : args) {
 			String lowerArg = arg.toLowerCase();
-			if (arg.startsWith("--"))
-			{
-				if (lowerArg.equals(OVERWRITE))
-				{
+			if (arg.startsWith("--")) {
+				if (lowerArg.equals(OVERWRITE)) {
 					forceOverwrite = true;
 					Logger.info("--overwrite: We will force overwrite target files");
 				} else if (lowerArg.startsWith(INCLUDE)) {
 					includeRegEx = arg.substring(INCLUDE.length());
-					if (includeRegEx.isEmpty())
-					{
+					if (includeRegEx.isEmpty()) {
 						Logger.warn(INCLUDE + ": " + INVALID_MODELPATTERN);
 						System.exit(-1);
 					}
-					Logger.info("--include: Including files that match: %s", includeRegEx);
+					Logger.info("--include: Including files that match: %s",
+							includeRegEx);
 				} else if (lowerArg.startsWith(EXCLUDE)) {
 					excludeRegEx = arg.substring(EXCLUDE.length());
-					if (excludeRegEx.isEmpty())
-					{
+					if (excludeRegEx.isEmpty()) {
 						Logger.warn(EXCLUDE + ": " + INVALID_MODELPATTERN);
 						System.exit(-1);
 					}
-					Logger.info("--exclude: Skipping files that match: %s", excludeRegEx);
+					Logger.info("--exclude: Skipping files that match: %s",
+							excludeRegEx);
+				} else if (lowerArg.equalsIgnoreCase(WITH_LAYOUT)) {
+					includeLayout = true;
+				} else if (lowerArg.equalsIgnoreCase(WITH_LOGIN)) {
+					includeLogin = true;
+				} else if (lowerArg.equalsIgnoreCase(ALL)) {
+					forceOverwrite = true;
+					includeLayout = true;
+					includeLogin = true;
 				} else {
 					Logger.warn("Invalid argument: %s", arg);
 				}
 			}
 		}
-		
+
 		// Locate domain model classes that we can process.
-		// Currently, we only support classes that extend the 
-		// play.db.jpa.Model or siena.Model classes. 
+		// Currently, we only support classes that extend the
+		// play.db.jpa.Model or siena.Model classes.
 		List<Class> classes = Play.classloader.getAllClasses();
 		ScaffoldingGenerator generator = new ScaffoldingGenerator();
 		generator.setForceOverwrite(forceOverwrite);
-		for (Class clazz : classes)
-		{
+		generator.setIncludeLayout(includeLayout);
+		generator.setIncludeLogin(includeLogin);
+		for (Class clazz : classes) {
 			// If this model is of a supported type, queue it up
 			// so the ScaffoldGenerator will create its controller
 			// and views.
-			if (ModelType.forClass(clazz) != null)
-			{
+			if (ModelType.forClass(clazz) != null) {
 				String simpleName = clazz.getSimpleName();
 				boolean includeEntity = false;
 				// by default, include all entities if no --include= value is
 				// specified
-				if (includeRegEx == null)
-				{
+				if (includeRegEx == null) {
 					includeEntity = true;
 				}
 				// if an --include= value is specified, include only the models
 				// that match
-				if (includeRegEx != null && match(simpleName, includeRegEx))
-				{
+				if (includeRegEx != null && match(simpleName, includeRegEx)) {
 					includeEntity = true;
 				}
 				// always exclude models that match the --exclude= parameter
-				if (excludeRegEx != null && match(simpleName, excludeRegEx))
-				{
+				if (excludeRegEx != null && match(simpleName, excludeRegEx)) {
 					includeEntity = false;
 				}
-				if (includeEntity)
-				{
+				if (includeEntity) {
 					Entity entity = new Entity(clazz);
 					generator.addEntity(entity);
 				} else {
@@ -132,20 +135,18 @@ public class Generate
 
 	// Does simple matching: you can add an asterisk to match "any"
 	// text. Matching is case insensitive.
-	public static boolean match(String text, String pattern)
-    {
+	public static boolean match(String text, String pattern) {
 		String normalizedText = text.toLowerCase();
 		String normalizedPattern = pattern.toLowerCase();
-        String [] subsections = normalizedPattern.split("\\*");
-        for (String subsection : subsections)
-        {
-            int idx = normalizedText.indexOf(subsection);
-            if(idx == -1)
-            {
-                return false;
-            }
-            normalizedText = normalizedText.substring(idx + subsection.length());
-        }
-        return true;
-    }
+		String[] subsections = normalizedPattern.split("\\*");
+		for (String subsection : subsections) {
+			int idx = normalizedText.indexOf(subsection);
+			if (idx == -1) {
+				return false;
+			}
+			normalizedText = normalizedText
+					.substring(idx + subsection.length());
+		}
+		return true;
+	}
 }

@@ -4,9 +4,8 @@ import play.db.jpa.Model;
 import play.modules.scaffold.Scaffolding;
 
 @javax.persistence.Entity
-@Scaffolding(controller="Foo")
-public class MyAnnotatedEntity extends Model
-{
+@Scaffolding(controller = "Foo")
+public class MyAnnotatedEntity extends Model {
 	public MyEnum anEnum;
 	public int anInt;
 	public String aString;

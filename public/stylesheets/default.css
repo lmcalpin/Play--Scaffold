@@ -66,7 +66,7 @@ a, img {
 }
 
 .fSuccess {
-	background-color: #dddd11;
+	background-color: #ffff00;
 	color: #222222;
 	max-width: 600px;
 	margin-bottom: 5px;
@@ -75,11 +75,20 @@ a, img {
 }
 
 .fError {
-	background-color: #dddd11;
-	color: #FF0000;
+	background-color: #990000;
+	color: #eeeeee;
 	max-width: 600px;
 	margin-bottom: 5px;
 	margin-left: auto;
 	margin-right: auto;
+	list-style-type: none;
 }
 
+.fError li {
+	margin-left: 15px;
+}
+
+form span.error {
+  color: #aa0000;
+  font-style: italic;
+}

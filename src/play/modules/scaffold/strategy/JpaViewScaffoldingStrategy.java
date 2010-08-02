@@ -27,19 +27,19 @@ import play.modules.scaffold.form.FormElementType;
 import play.modules.scaffold.utils.Classes;
 import play.modules.scaffold.utils.Enums;
 
-public class JpaViewScaffoldingStrategy extends DefaultViewScaffoldingStrategy
-{
+public class JpaViewScaffoldingStrategy extends DefaultViewScaffoldingStrategy {
 
 	@Override
-	public FormElement render(Field field)
-	{
+	public FormElement render(Field field) {
 		FormElement defaultValue = super.render(field);
+		if (defaultValue == null)
+			return null;
 		List<String> annotations = Classes.annotations(field);
-		if (defaultValue.getType() == FormElementType.TEXT && annotations.contains("javax.persistence.Lob"))
-		{
+		if (defaultValue.getType() == FormElementType.TEXT
+				&& annotations.contains("javax.persistence.Lob")) {
 			return new FormElement(defaultValue, FormElementType.TEXTAREA);
-		} if (annotations.contains("javax.persistence.Id"))
-		{
+		}
+		if (annotations.contains("javax.persistence.Id")) {
 			return new FormElement(defaultValue, FormElementType.HIDDEN);
 		}
 		return defaultValue;

@@ -23,26 +23,22 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Enums
-{
+public class Enums {
 
-	public static<T extends Enum<T>> List<String> list(T[] values)
-	{
+	public static <T extends Enum<T>> List<String> list(T[] values) {
 		List<String> returnMe = new ArrayList<String>();
-		for (T value : values)
-		{
+		for (T value : values) {
 			returnMe.add(value.name());
 		}
 		return returnMe;
 	}
 
 	@SuppressWarnings("unchecked")
-	public static Enum[] values(Class<Enum> clazz)
-	{
+	public static Enum[] values(Class<Enum> clazz) {
 		try {
-			Method method = clazz.getMethod("values", new Class[]{});
-			Object retValue = method.invoke(clazz, new Object[]{});
-			Enum[] enums = (Enum[])retValue;
+			Method method = clazz.getMethod("values", new Class[] {});
+			Object retValue = method.invoke(clazz, new Object[] {});
+			Enum[] enums = (Enum[]) retValue;
 			return enums;
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();

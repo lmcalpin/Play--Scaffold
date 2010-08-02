@@ -3,11 +3,9 @@ package play.modules.scaffold;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class GenerateTest
-{
+public class GenerateTest {
 	@Test
-	public void testMatchWildcard()
-	{
+	public void testMatchWildcard() {
 		assertTrue(Generate.match("StartsWith", "Starts*"));
 		assertTrue(Generate.match("EndsWith", "*With"));
 		assertTrue(Generate.match("EndsWith", "*sW*"));
@@ -16,10 +14,9 @@ public class GenerateTest
 		assertFalse(Generate.match("EndsWith", "EE*sW*h"));
 		assertFalse(Generate.match("EndsWith", "E*ssW*h"));
 	}
-	
+
 	@Test
-	public void testMatchIsCaseInsensitive()
-	{
+	public void testMatchIsCaseInsensitive() {
 		assertTrue(Generate.match("StartsWith", "startswith"));
 		assertTrue(Generate.match("EndsWith", "enDsWitH"));
 	}
