@@ -11,11 +11,25 @@ Actually, maybe you should create your project first, and then edit its applicat
 Now, add some JPA or Siena models. The model entities have to extend play.db.jpa.Model or siena.Model.
 
 Then run:
-play scaffold:gen --overwrite
+play scaffold:gen
 
 Then launch your application:
 play run
 
-Then marvel at how awesome the Play! framework is.
 
-[optional] Now, get to work making your application useful or something.
+*Additional Options*
+
+--with-layout: 
+Creates the main.html template layout file and an Application.index view which simply enumerates your controllers.  Because these files already exist in the default Play! project, you usually need to use --overwrite to ensure they are written. If you don't want controllers and views to be written as well, use --exclude:~ to omit them.
+
+--with-login:
+Requires you to use the secure module as well.  This will cause generated controllers to be marked with the @With(Secure.class) annotation to require a login.  It also creates a model called User, a default authentify implementation and, if --with-layout is specified, will add Login | Logout links to the Application.index home page.  The User model extends play.db.jpa.Model.  If you are using an alternative ORM, you are on your own (at this time.)
+
+--include=...:
+Allows you to restrict controller and view scaffolding to the specified models.  Allows a "~" wildcard.  For example --include=a~s will only build a controller and views for models that begin with "a" and end with "s".
+
+--exclude=...:
+Allows you to restrict controller and view scaffolding to the specified models.  Allows a "~" wildcard.  For example --exclude=a~s will only build a controller and views for models that DO NOT begin with "a" and end with "s".  If both --include and --exclude are specified, --exclude has precedence.
+
+--overwrite
+By default, we won't overwrite files if they already exist.  This flag will instruct us to overwrite anything we are trying to generate, even if it exists already.

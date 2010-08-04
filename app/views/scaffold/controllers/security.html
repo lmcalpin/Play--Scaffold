@@ -25,7 +25,8 @@ public class Security extends Secure.Security {
     boolean match = user != null && user.passwordHash.equals(passwordHash);
     if (match) {
       user.loginCount++;
-      user.merge().save();
+      user.merge();
+      user.save();
     }
     return match;
   }

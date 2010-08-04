@@ -16,7 +16,7 @@
  *  limitations under the License.
  *
  */
-package play.modules.scaffold;
+package play.modules.scaffold.generator;
 
 import java.io.File;
 import java.io.IOException;
@@ -241,14 +241,13 @@ public class ScaffoldingGenerator {
 		generate(templatePath, sourcePath, templateArgs);
 	}
 
-	// simply copy over the layout file -- nothing to generate (yet)
+	// generate the layout file
 	private void generateLayout() {
 		Logger.info("Generating layout: main.html");
 		String sourcePath = "app" + File.separator + "views" + File.separator
 				+ "scaffold" + File.separator + "main.html";
 		String targetPath = "app" + File.separator + "views" + File.separator
 				+ "main.html";
-		// copyFile(sourcePath, targetPath);
 		generate(sourcePath, targetPath);
 	}
 

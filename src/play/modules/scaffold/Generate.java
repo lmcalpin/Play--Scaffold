@@ -25,6 +25,7 @@ import play.Logger;
 import play.Play;
 import play.modules.scaffold.entity.Entity;
 import play.modules.scaffold.entity.ModelType;
+import play.modules.scaffold.generator.ScaffoldingGenerator;
 
 /**
  * Processes the scaffold:gen command. This command generates the scaffolding
@@ -34,8 +35,8 @@ import play.modules.scaffold.entity.ModelType;
  * @author Lawrence McAlpin
  */
 public class Generate {
-	private static final String EXCLUDE = "--exclude=";
-	private static final String INCLUDE = "--include=";
+	private static final String EXCLUDE = "--exclude";
+	private static final String INCLUDE = "--include";
 	private static final String OVERWRITE = "--overwrite";
 	private static final String WITH_LAYOUT = "--with-layout";
 	private static final String WITH_LOGIN = "--with-login";
@@ -57,28 +58,40 @@ public class Generate {
 		boolean includeLogin = false;
 
 		// interpret command line arguments
+		String gettingArgumentsForCommand = null;
 		for (String arg : args) {
+			if (gettingArgumentsForCommand != null) {
+				if (gettingArgumentsForCommand.equalsIgnoreCase(INCLUDE)) {
+					gettingArgumentsForCommand = INCLUDE;
+					if (arg.isEmpty()) {
+						Logger.warn(INCLUDE + ": " + INVALID_MODELPATTERN);
+						System.exit(-1);
+					}
+					includeRegEx = arg;
+					Logger.info("--include: Including files that match: %s",
+							includeRegEx);
+				} else if (gettingArgumentsForCommand.equalsIgnoreCase(EXCLUDE)) {
+					gettingArgumentsForCommand = EXCLUDE;
+					if (arg.isEmpty()) {
+						Logger.warn(EXCLUDE + ": " + INVALID_MODELPATTERN);
+						System.exit(-1);
+					}
+					excludeRegEx = arg;
+					Logger.info("--exclude: Skipping files that match: %s",
+							excludeRegEx);
+				}
+				gettingArgumentsForCommand = null;
+				continue;
+			}
 			String lowerArg = arg.toLowerCase();
 			if (arg.startsWith("--")) {
 				if (lowerArg.equals(OVERWRITE)) {
 					forceOverwrite = true;
 					Logger.info("--overwrite: We will force overwrite target files");
-				} else if (lowerArg.startsWith(INCLUDE)) {
-					includeRegEx = arg.substring(INCLUDE.length());
-					if (includeRegEx.isEmpty()) {
-						Logger.warn(INCLUDE + ": " + INVALID_MODELPATTERN);
-						System.exit(-1);
-					}
-					Logger.info("--include: Including files that match: %s",
-							includeRegEx);
-				} else if (lowerArg.startsWith(EXCLUDE)) {
-					excludeRegEx = arg.substring(EXCLUDE.length());
-					if (excludeRegEx.isEmpty()) {
-						Logger.warn(EXCLUDE + ": " + INVALID_MODELPATTERN);
-						System.exit(-1);
-					}
-					Logger.info("--exclude: Skipping files that match: %s",
-							excludeRegEx);
+				} else if (lowerArg.equalsIgnoreCase(INCLUDE)) {
+					gettingArgumentsForCommand = INCLUDE;
+				} else if (lowerArg.equalsIgnoreCase(EXCLUDE)) {
+					gettingArgumentsForCommand = EXCLUDE;
 				} else if (lowerArg.equalsIgnoreCase(WITH_LAYOUT)) {
 					includeLayout = true;
 				} else if (lowerArg.equalsIgnoreCase(WITH_LOGIN)) {
@@ -138,14 +151,28 @@ public class Generate {
 	public static boolean match(String text, String pattern) {
 		String normalizedText = text.toLowerCase();
 		String normalizedPattern = pattern.toLowerCase();
-		String[] subsections = normalizedPattern.split("\\*");
+		String[] subsections = normalizedPattern.split("[\\*~]");
+		int section = 0;
 		for (String subsection : subsections) {
 			int idx = normalizedText.indexOf(subsection);
 			if (idx == -1) {
 				return false;
 			}
+			// if we don't start with a wildcard, the first matched section must be at index 0
+			if (section == 0 && (!(normalizedPattern.startsWith("*") || normalizedPattern.startsWith("~")))) {
+				if (idx != 0) {
+					return false;
+				}
+			}
+			// if we don't end with a wildcard, the first matched section must be at index 0
+			if (section == subsections.length-1 && (!(normalizedPattern.endsWith("*") || normalizedPattern.endsWith("~")))) {
+				if (!normalizedText.endsWith(subsection)) {
+					return false;
+				}
+			}
 			normalizedText = normalizedText
 					.substring(idx + subsection.length());
+			section++;
 		}
 		return true;
 	}

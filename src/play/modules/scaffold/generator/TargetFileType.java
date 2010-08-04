@@ -1,4 +1,4 @@
-package play.modules.scaffold;
+package play.modules.scaffold.generator;
 
 public enum TargetFileType {
 	CONTROLLER, MODEL, VIEW;
