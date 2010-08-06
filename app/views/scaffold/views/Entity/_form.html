@@ -8,7 +8,7 @@
 			<div class="field">
 				#{if elem.isCheckbox() }
 					<input type="checkbox" name="entity.${elem.name}"
-						#{generateExpression entity:elem.name, expr:'entity?.$1 ? "checked":""' /}
+						#{generateExpression entity:elem.name, expr:'entity?.$1 ? \'checked\':\'\'' /}
 						/>
 				#{/if}
 				#{elseif elem.isDate()}
