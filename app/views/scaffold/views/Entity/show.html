@@ -4,14 +4,16 @@ ${"#{"}extends 'main.html' /}
 
 <div class="entity">
 #{list items:entity.formElements, as:'elem'}
+  #{ifnot elem.isPassword()}
 	<div class="row">
 		<span class="elem">
 			${elem.name}:
 		</span>
 		<span class="value">
-			#{generateExpression entity:elem.name, expr:'entity.$1' /}
+      #{generateExpression entity:elem.name, expr:'entity.$1' /}
 		</span>
 	</div>
+  #{/ifnot}
 #{/list}
 </div>
 
