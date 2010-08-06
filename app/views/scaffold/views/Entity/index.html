@@ -5,9 +5,11 @@ ${"#{"}extends 'main.html' /}
 <table class="entity ${entity.name}">
 	<tr>
 		<td><!-- actions --></td>
-		#{list items:entity.formElements, as:'elem'}
-			<td>${elem.name}</td>
-		#{/list}
+			#{list items:entity.formElements, as:'elem'}
+        #{ifnot elem.isPassword()}
+					<td>${elem.name}</td>
+        #{/ifnot}
+			#{/list}
 	</tr>
 	${"#{"}list items:entities, as:'entity'}
 		<tr>
@@ -24,7 +26,9 @@ ${"#{"}extends 'main.html' /}
 				#{/else}
 			</td>
 			#{list items:entity.formElements, as:'elem'}
-				<td>#{generateExpression entity:elem.name, expr:'entity.$1' /}</td>
+        #{ifnot elem.isPassword()}
+					<td>#{generateExpression entity:elem.name, expr:'entity.$1' /}</td>
+        #{/ifnot}
 			#{/list}
 		</tr>
 	${"#{/"}list}

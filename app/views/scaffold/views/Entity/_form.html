@@ -33,6 +33,9 @@
 				#{elseif elem.isTextArea()}
 					<textarea name="entity.${elem.name}" rows="10" cols="40">#{generateExpression entity:elem.name, expr:'entity?.$1' /}</textarea>
 				#{/elseif}
+        #{elseif elem.isPassword()}
+          <input type="password" name="entity.${elem.name}" value="#{generateExpression entity:elem.name, expr:'entity?.$1' /}"/>
+        #{/elseif}
 				#{elseif elem.isHidden()}
 					<input type="hidden" name="entity.${elem.name}" value="#{generateExpression entity:elem.name, expr:'entity?.$1' /}"/>
 				#{/elseif}

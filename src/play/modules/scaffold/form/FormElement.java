@@ -69,6 +69,10 @@ public class FormElement {
 		return type == FormElementType.HIDDEN;
 	}
 
+	public boolean isPassword() {
+		return type == FormElementType.PASSWORD;
+	}
+
 	public boolean isTextArea() {
 		return type == FormElementType.TEXTAREA;
 	}

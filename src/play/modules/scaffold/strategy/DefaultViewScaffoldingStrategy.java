@@ -25,6 +25,7 @@ import java.util.List;
 import play.modules.scaffold.ViewScaffoldingHint;
 import play.modules.scaffold.form.FormElement;
 import play.modules.scaffold.form.FormElementType;
+import play.modules.scaffold.utils.Classes;
 import play.modules.scaffold.utils.Enums;
 
 public class DefaultViewScaffoldingStrategy implements ViewScaffoldingStrategy {
@@ -34,6 +35,7 @@ public class DefaultViewScaffoldingStrategy implements ViewScaffoldingStrategy {
 		FormElementType type;
 		List<String> options = null;
 		Class<?> classType = field.getType();
+		List<String> annotations = Classes.annotations(field);
 		if (classType.equals(Boolean.class) || classType.equals(boolean.class)) {
 			type = FormElementType.CHECKBOX;
 		} else if (classType.equals(Date.class)) {
@@ -42,6 +44,8 @@ public class DefaultViewScaffoldingStrategy implements ViewScaffoldingStrategy {
 			type = FormElementType.SELECT;
 			Class<Enum> enumClass = (Class<Enum>) classType;
 			options = Enums.list(Enums.values(enumClass));
+		} else if (annotations.contains("play.data.validation.Password")) {
+			type = FormElementType.PASSWORD;
 		} else {
 			type = FormElementType.TEXT;
 		}
