@@ -18,12 +18,14 @@
  */
 package play.modules.scaffold.entity;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 import play.modules.scaffold.strategy.JpaViewScaffoldingStrategy;
 import play.modules.scaffold.strategy.SienaViewScaffoldingStrategy;
 import play.modules.scaffold.strategy.ViewScaffoldingStrategy;
 import play.modules.scaffold.utils.Classes;
+import play.modules.scaffold.utils.Fields;
 
 public enum ModelType {
 	PLAY_JPA, PURE_JPA, SIENA;
@@ -38,6 +40,20 @@ public enum ModelType {
 			return new SienaViewScaffoldingStrategy();
 		}
 		return null;
+	}
+	
+	public boolean isId(Field field) {
+		List<String> annotations = Fields.annotations(field);
+		switch (this) {
+		case PLAY_JPA:
+			return (annotations.contains("javax.persistence.Id"));
+		case PURE_JPA:
+			return (annotations.contains("javax.persistence.Id"));
+		case SIENA:
+			return (annotations.contains("siena.Id"));
+		}
+		return false;
+		
 	}
 
 	// Determine whether this is a play.db.jpa.Model model or an alternative

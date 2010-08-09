@@ -86,7 +86,7 @@ public class ScaffoldingGenerator {
 			Object templateCompiler = null;
 			Method compile = null;
 			if (version.startsWith("1.0")) {
-				Class templateCompilerClass = Class
+				Class<?> templateCompilerClass = Class
 						.forName("play.templates.TemplateCompiler");
 				if (templateCompilerClass != null) {
 					compile = templateCompilerClass.getMethod("compile",
@@ -94,7 +94,7 @@ public class ScaffoldingGenerator {
 				}
 				templateCompiler = templateCompilerClass;
 			} else {
-				Class templateCompilerClass = Class
+				Class<?> templateCompilerClass = Class
 						.forName("play.templates.GroovyTemplateCompiler");
 				if (templateCompilerClass != null) {
 					compile = templateCompilerClass.getMethod("compile",
@@ -206,7 +206,7 @@ public class ScaffoldingGenerator {
 	}
 
 	private void generateController(Entity entity) {
-		Class controller = Play.classloader.getClassIgnoreCase(entity
+		Class<?> controller = Play.classloader.getClassIgnoreCase(entity
 				.getControllerName());
 		if (controller != null) {
 			Logger.info("Skipping controller: " + entity.getControllerName());
@@ -221,14 +221,14 @@ public class ScaffoldingGenerator {
 				+ File.separator + "controller."
 				+ entity.getModelType().name().toLowerCase() + ".html";
 
-		generateForEntity(controllerSourcePath, controllerTemplatePath, entity);
+		generateForEntity(controllerTemplatePath, controllerSourcePath, entity);
 	}
 
-	private void generateForEntity(String sourcePath, String templatePath,
+	private void generateForEntity(String templatePath, String targetPath,
 			Entity entity) {
 		Map<String, Object> templateArgs = new HashMap<String, Object>();
 		templateArgs.put("entity", entity);
-		generate(templatePath, sourcePath, templateArgs);
+		generate(templatePath, targetPath, templateArgs);
 	}
 
 	private void generateHome() {
@@ -274,7 +274,7 @@ public class ScaffoldingGenerator {
 		// implement authentify
 		copyFile(TargetFileType.CONTROLLER, "Security");
 		// generate views and controller for User
-		Class clazz;
+		Class<?> clazz;
 		try {
 			clazz = Play.classloader.loadClass("models.User");
 			if (clazz != null) {
@@ -300,11 +300,16 @@ public class ScaffoldingGenerator {
 	private void generateViewsForEntity(Entity entity) {
 		// create the view folder if necessary
 		Logger.info("Generating views for " + entity.getControllerName());
-		String templatePath = entity.getControllerTemplatePath();
-		ensureDirectoryExists(templatePath);
+		String targetViewPath = "app" + File.separator + "views"
+				+ File.separator + entity.getControllerName() + File.separator;
+		String baseViewTemplatePath = "app" + File.separator + "views"
+				+ File.separator + "scaffold" + File.separator + "views"
+				+ File.separator + "Entity" + File.separator;
+		ensureDirectoryExists(targetViewPath);
 		for (String view : VIEW_HTMLS) {
-			generateForEntity(entity.getControllerTemplatePath() + view,
-					entity.getViewTemplatePath() + view, entity);
+			String modelViewTemplatePath = baseViewTemplatePath + view;
+			generateForEntity(modelViewTemplatePath,
+					targetViewPath + view, entity);
 		}
 	}
 

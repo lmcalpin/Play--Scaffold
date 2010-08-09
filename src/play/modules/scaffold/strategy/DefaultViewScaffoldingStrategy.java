@@ -22,11 +22,12 @@ import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.List;
 
-import play.modules.scaffold.ViewScaffoldingHint;
+import play.modules.scaffold.NoScaffolding;
+import play.modules.scaffold.ViewScaffoldingOverride;
 import play.modules.scaffold.form.FormElement;
 import play.modules.scaffold.form.FormElementType;
-import play.modules.scaffold.utils.Classes;
 import play.modules.scaffold.utils.Enums;
+import play.modules.scaffold.utils.Fields;
 
 public class DefaultViewScaffoldingStrategy implements ViewScaffoldingStrategy {
 
@@ -35,7 +36,7 @@ public class DefaultViewScaffoldingStrategy implements ViewScaffoldingStrategy {
 		FormElementType type;
 		List<String> options = null;
 		Class<?> classType = field.getType();
-		List<String> annotations = Classes.annotations(field);
+		List<String> annotations = Fields.annotations(field);
 		if (classType.equals(Boolean.class) || classType.equals(boolean.class)) {
 			type = FormElementType.CHECKBOX;
 		} else if (classType.equals(Date.class)) {
@@ -49,9 +50,16 @@ public class DefaultViewScaffoldingStrategy implements ViewScaffoldingStrategy {
 		} else {
 			type = FormElementType.TEXT;
 		}
-		ViewScaffoldingHint formHint = field.getAnnotation(ViewScaffoldingHint.class);
-		if (formHint != null && !formHint.display())
+		NoScaffolding formHint = field.getAnnotation(NoScaffolding.class);
+		if (formHint != null)
 			return null;
+		ViewScaffoldingOverride formOverride = field.getAnnotation(ViewScaffoldingOverride.class);
+		if (formOverride != null)
+		{
+			// user override for the FormElementType
+			if (formOverride.type() != null)
+				return new FormElement(name, formOverride.type(), options);
+		}
 		return new FormElement(name, type, options);
 	}
 

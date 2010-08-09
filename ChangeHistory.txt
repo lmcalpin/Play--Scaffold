@@ -1,0 +1,19 @@
+2010-8-9
+
+* added NoScaffolding and ViewScaffoldingOverride annotations
+* removed obsolete ViewScaffoldingHint annotation
+* added better support for Siena models
+  - id field's name will be inferred from the field with the @Id annotation
+  - code no longer assumes certain helper methods would be present
+
+2010-8-6
+
+* password field support added
+
+2010-8-1
+
+* Play! 1.1 support added
+
+2010-7-1
+
+* initial publish

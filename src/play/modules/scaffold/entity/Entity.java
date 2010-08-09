@@ -42,9 +42,11 @@ public class Entity {
 	private String packageName;
 	private String name;
 	private String controllerName;
-	private String controllerTemplatePath;
-	private String viewTemplatePath;
 	private ModelType modelType;
+	
+	// currently, we only support single field primary keys
+	private String idField;
+	private Class<?> idClass;
 
 	// form elements that we render in the view
 	private List<FormElement> formElements;
@@ -60,17 +62,16 @@ public class Entity {
 		}
 		this.controllerName = controllerOverride != null ? controllerOverride
 				: Strings.pluralize(name);
-		this.controllerTemplatePath = "app" + File.separator + "views"
-				+ File.separator + controllerName + File.separator;
-		this.viewTemplatePath = "app" + File.separator + "views"
-				+ File.separator + "scaffold" + File.separator + "views"
-				+ File.separator + "Entity" + File.separator;
 		this.modelType = ModelType.forClass(clazz);
 		this.scaffoldingStrategy = modelType.getViewScaffoldingStrategy();
 		this.formElements = new ArrayList<FormElement>();
 
 		List<Field> fields = publicFields(clazz);
 		for (Field field : fields) {
+			if (modelType.isId(field)) {
+				idField = field.getName();
+				idClass = field.getType();
+			}
 			addFormElement(field);
 		}
 	}
@@ -103,6 +104,14 @@ public class Entity {
 		return formElements;
 	}
 
+	public String getIdField() {
+		return idField;
+	}
+
+	public Class<?> getIdClass() {
+		return idClass;
+	}
+
 	public String getControllerName() {
 		return controllerName;
 	}
@@ -113,14 +122,6 @@ public class Entity {
 
 	public String getPackageName() {
 		return packageName;
-	}
-
-	public String getControllerTemplatePath() {
-		return controllerTemplatePath;
-	}
-
-	public String getViewTemplatePath() {
-		return viewTemplatePath;
 	}
 
 	public ModelType getModelType() {

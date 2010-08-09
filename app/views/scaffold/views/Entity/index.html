@@ -15,9 +15,9 @@ ${"#{"}extends 'main.html' /}
 		<tr>
 			<td>
 				#{if entity.getUsesPlayModelSupport()}
-					<a href="${"@{"}${entity.controllerName}.show(entity.id)}">Show</a>&nbsp;
-					<a href="${"@{"}${entity.controllerName}.edit(entity.id)}">Edit</a>&nbsp;
-					<a href="${"@{"}${entity.controllerName}.delete(entity.id)}" onclick="if (!confirm('Are you sure you want to delete this record?')) return false;">Delete</a>
+					<a href="${"@{"}${entity.controllerName}.show(entity.${entity.idField})}">Show</a>&nbsp;
+					<a href="${"@{"}${entity.controllerName}.edit(entity.${entity.idField})}">Edit</a>&nbsp;
+					<a href="${"@{"}${entity.controllerName}.delete(entity.${entity.idField})}" onclick="if (!confirm('Are you sure you want to delete this record?')) return false;">Delete</a>
 				#{/if}
 				#{else}
 					<a href="${"@{"}${entity.controllerName}.show(entity)}">Show</a>&nbsp;

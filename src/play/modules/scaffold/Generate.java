@@ -102,6 +102,7 @@ public class Generate {
 					includeLogin = true;
 				} else {
 					Logger.warn("Invalid argument: %s", arg);
+					System.exit(-1);
 				}
 			}
 		}

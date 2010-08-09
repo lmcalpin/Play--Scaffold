@@ -16,7 +16,6 @@ play scaffold:gen
 Then launch your application:
 play run
 
-
 *Additional Options*
 
 --with-layout: 
@@ -33,3 +32,15 @@ Allows you to restrict controller and view scaffolding to the specified models. 
 
 --overwrite
 By default, we won't overwrite files if they already exist.  This flag will instruct us to overwrite anything we are trying to generate, even if it exists already.
+
+*Model Annotations*
+
+We try to infer as much information as possible from the model, but it could be useful to instruct the
+scaffolding code to generate (or ignore) fields in a particular fashion.  We allow you to use two annotations
+to control this behavior:
+
+@NoScaffolding: this causes the scaffolding generator to ignore the annotated field
+
+@ViewScaffoldingOverride: this lets you define the FormElementType that you would like an annotated field to
+be rendered as
+

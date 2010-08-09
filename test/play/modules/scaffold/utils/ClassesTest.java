@@ -42,4 +42,9 @@ public class ClassesTest {
 		assertEquals("play.modules.scaffold.entity", packageName);
 	}
 
+	@Test
+	public void testIsNumeric() {
+		assertTrue(Classes.isNumeric(Long.class));
+		assertFalse(Classes.isNumeric(String.class));
+	}
 }

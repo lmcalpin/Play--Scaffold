@@ -23,7 +23,7 @@ import java.util.List;
 
 import play.modules.scaffold.form.FormElement;
 import play.modules.scaffold.form.FormElementType;
-import play.modules.scaffold.utils.Classes;
+import play.modules.scaffold.utils.Fields;
 
 public class SienaViewScaffoldingStrategy extends
 		DefaultViewScaffoldingStrategy {
@@ -33,13 +33,13 @@ public class SienaViewScaffoldingStrategy extends
 		FormElement defaultValue = super.render(field);
 		if (defaultValue == null)
 			return null;
-		List<String> annotations = Classes.annotations(field);
+		List<String> annotations = Fields.annotations(field);
 		if (defaultValue.getType() == FormElementType.TEXT
 				&& annotations.contains("siena.Text")) {
 			return new FormElement(defaultValue, FormElementType.TEXTAREA);
 		}
 		if (annotations.contains("siena.Id")) {
-			return new FormElement(defaultValue, FormElementType.HIDDEN);
+			return null;
 		}
 		return defaultValue;
 	}

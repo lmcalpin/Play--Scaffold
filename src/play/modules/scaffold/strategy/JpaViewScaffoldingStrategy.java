@@ -24,8 +24,8 @@ import java.util.List;
 
 import play.modules.scaffold.form.FormElement;
 import play.modules.scaffold.form.FormElementType;
-import play.modules.scaffold.utils.Classes;
 import play.modules.scaffold.utils.Enums;
+import play.modules.scaffold.utils.Fields;
 
 public class JpaViewScaffoldingStrategy extends DefaultViewScaffoldingStrategy {
 
@@ -34,7 +34,7 @@ public class JpaViewScaffoldingStrategy extends DefaultViewScaffoldingStrategy {
 		FormElement defaultValue = super.render(field);
 		if (defaultValue == null)
 			return null;
-		List<String> annotations = Classes.annotations(field);
+		List<String> annotations = Fields.annotations(field);
 		if (defaultValue.getType() == FormElementType.TEXT
 				&& annotations.contains("javax.persistence.Lob")) {
 			return new FormElement(defaultValue, FormElementType.TEXTAREA);

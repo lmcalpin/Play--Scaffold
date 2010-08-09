@@ -52,15 +52,6 @@ public class Classes {
 		return output;
 	}
 
-	public static List<String> annotations(Field field) {
-		List<String> output = new ArrayList<String>();
-		Annotation[] annotations = field.getAnnotations();
-		for (Annotation ann : annotations) {
-			output.add(ann.annotationType().getName());
-		}
-		return output;
-	}
-
 	public static List<String> annotations(Class<?> clazz) {
 		List<String> output = new ArrayList<String>();
 		Annotation[] annotations = clazz.getAnnotations();
@@ -94,5 +85,11 @@ public class Classes {
 			packageName = fullName.substring(0, subpackageIdx);
 		}
 		return packageName;
+	}
+	
+	public static boolean isNumeric(Class<?> type) {
+		if (Number.class.isAssignableFrom(type))
+			return true;
+		return false;
 	}
 }
