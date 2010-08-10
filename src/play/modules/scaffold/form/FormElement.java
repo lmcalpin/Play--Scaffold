@@ -18,27 +18,32 @@
  */
 package play.modules.scaffold.form;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 public class FormElement {
 	private String name;
-	private FormElementType type;
+	private Class<?> fieldType;
+	private FormElementType formElementType;
 	private List<String> options;
+	private boolean required;
 
-	public FormElement(String name, FormElementType type) {
-		this(name, type, null);
+	public FormElement(Field field, FormElementType type) {
+		this(field, type, null);
 	}
 
-	public FormElement(String name, FormElementType type, List<String> options) {
-		this.name = name;
-		this.type = type;
+	public FormElement(Field field, FormElementType formElementType, List<String> options) {
+		this.name = field.getName();
+		this.fieldType = field.getType();
+		this.formElementType = formElementType;
 		this.options = options;
 	}
 
-	public FormElement(FormElement copy, FormElementType type) {
+	public FormElement(FormElement copy, FormElementType formElementType) {
 		this.name = copy.name;
+		this.fieldType = copy.fieldType;
 		this.options = copy.options;
-		this.type = type;
+		this.formElementType = formElementType;
 	}
 
 	public String getName() {
@@ -46,35 +51,47 @@ public class FormElement {
 	}
 
 	public FormElementType getType() {
-		return type;
+		return formElementType;
 	}
 
 	public boolean isCheckbox() {
-		return type == FormElementType.CHECKBOX;
+		return formElementType == FormElementType.CHECKBOX;
 	}
 
 	public boolean isSelect() {
-		return type == FormElementType.SELECT;
+		return formElementType == FormElementType.SELECT;
 	}
 
 	public boolean isDate() {
-		return type == FormElementType.DATE;
+		return formElementType == FormElementType.DATE;
 	}
 
 	public boolean isText() {
-		return type == FormElementType.TEXT;
+		return formElementType == FormElementType.TEXT;
 	}
 
 	public boolean isHidden() {
-		return type == FormElementType.HIDDEN;
+		return formElementType == FormElementType.HIDDEN;
 	}
 
 	public boolean isPassword() {
-		return type == FormElementType.PASSWORD;
+		return formElementType == FormElementType.PASSWORD;
 	}
 
 	public boolean isTextArea() {
-		return type == FormElementType.TEXTAREA;
+		return formElementType == FormElementType.TEXTAREA;
+	}
+
+	public boolean isManyToOneRelation() {
+		return formElementType == FormElementType.MANY_TO_ONE;
+	}
+
+	public boolean isRequired() {
+		return required;
+	}
+
+	public void setRequired(boolean required) {
+		this.required = required;
 	}
 
 	public List<String> getOptions() {

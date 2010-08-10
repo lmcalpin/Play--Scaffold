@@ -24,7 +24,9 @@ public class Tags {
 	public static String generateExpression(String entity, String expr) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("${");
-		expr = expr.replaceAll("\\$1", entity);
+		if (entity != null) {
+			expr = expr.replaceAll("\\$1", entity);
+		}
 		sb.append(expr);
 		sb.append("}");
 		return sb.toString();
@@ -34,9 +36,11 @@ public class Tags {
 		StringBuilder sb = new StringBuilder();
 		sb.append("${");
 		int idx = 1;
-		for (String entity : entities) {
-			String var = "\\$" + idx++;
-			expr = expr.replaceAll(var, entity);
+		if (entities != null) {
+			for (String entity : entities) {
+				String var = "\\$" + idx++;
+				expr = expr.replaceAll(var, entity);
+			}
 		}
 		sb.append(expr);
 		sb.append("}");

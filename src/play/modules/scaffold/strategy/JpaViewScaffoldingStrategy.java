@@ -42,6 +42,9 @@ public class JpaViewScaffoldingStrategy extends DefaultViewScaffoldingStrategy {
 		if (annotations.contains("javax.persistence.Id")) {
 			return new FormElement(defaultValue, FormElementType.HIDDEN);
 		}
+		if (annotations.contains("javax.persistence.ManyToOne")) {
+			return new FormElement(defaultValue, FormElementType.MANY_TO_ONE);
+		}
 		return defaultValue;
 	}
 }

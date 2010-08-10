@@ -39,7 +39,7 @@ public class SienaViewScaffoldingStrategy extends
 			return new FormElement(defaultValue, FormElementType.TEXTAREA);
 		}
 		if (annotations.contains("siena.Id")) {
-			return null;
+			return new FormElement(defaultValue, FormElementType.HIDDEN);
 		}
 		return defaultValue;
 	}

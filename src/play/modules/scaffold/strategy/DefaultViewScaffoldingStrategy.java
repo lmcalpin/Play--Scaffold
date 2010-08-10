@@ -57,10 +57,13 @@ public class DefaultViewScaffoldingStrategy implements ViewScaffoldingStrategy {
 		if (formOverride != null)
 		{
 			// user override for the FormElementType
-			if (formOverride.type() != null)
-				return new FormElement(name, formOverride.type(), options);
+			type = formOverride.type();
 		}
-		return new FormElement(name, type, options);
+		FormElement element = new FormElement(field, type, options);
+		if (annotations.contains("play.data.validation.Required")) {
+			element.setRequired(true);
+		}
+		return element;
 	}
 
 }

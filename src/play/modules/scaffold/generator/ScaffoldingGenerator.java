@@ -48,10 +48,10 @@ import play.vfs.VirtualFile;
  * @author Lawrence McAlpin
  */
 public class ScaffoldingGenerator {
-	private static final String CREATE_HTML = "create.html";
-	private static final String SHOW_HTML = "show.html";
-	private static final String EDIT_HTML = "edit.html";
-	private static final String LIST_HTML = "index.html";
+	private static final String CREATE_HTML = "create";
+	private static final String SHOW_HTML = "show";
+	private static final String EDIT_HTML = "edit";
+	private static final String LIST_HTML = "index";
 
 	private static final List<String> VIEW_HTMLS = Arrays.asList(CREATE_HTML,
 			SHOW_HTML, EDIT_HTML, LIST_HTML);
@@ -187,21 +187,57 @@ public class ScaffoldingGenerator {
 	}
 
 	private void copyFile(TargetFileType type, String fileName) {
-		String[] paths = getPaths(type, fileName);
+		String[] paths = getPaths(type, fileName, fileName);
 		copyFile(paths[0], paths[1]);
 	}
 
 	private void generate(TargetFileType type, String fileName) {
-		String[] paths = getPaths(type, fileName);
+		String[] paths = getPaths(type, fileName, fileName);
 		generate(paths[0], paths[1]);
 	}
 
-	private String[] getPaths(TargetFileType type, String fileName) {
-		String templatePath = "app" + File.separator + "views" + File.separator
-				+ "scaffold" + File.separator + type.getPath() + File.separator
-				+ fileName.toLowerCase() + ".html";
+	private void generate(TargetFileType type, String sourceFileName,
+			String targetName) {
+		String[] paths = getPaths(type, null, sourceFileName, targetName);
+		generate(paths[0], paths[1]);
+	}
+
+	private void generate(TargetFileType type, String sourceFolderName,
+			String sourceFileName, String targetName) {
+		String[] paths = getPaths(type, sourceFolderName, sourceFileName,
+				targetName);
+		generate(paths[0], paths[1]);
+	}
+
+	private void generateForEntity(Entity entity, TargetFileType type,
+			String templateFolderPath, String templateFileName, String targetName) {
+		String[] paths = getPaths(type, templateFolderPath, templateFileName, targetName);
+		Map<String, Object> templateArgs = new HashMap<String,Object>();
+		templateArgs.put("entity", entity);
+		generate(paths[0], paths[1], templateArgs);
+	}
+
+	private String[] getPaths(TargetFileType type, String templateFileName,
+			String targetFileName) {
+		return getPaths(type, null, templateFileName, targetFileName);
+	}
+
+	private String[] getPaths(TargetFileType type, String templateFolderPath,
+			String templateFileName, String targetFileName) {
+		String sourceFileName = templateFolderPath != null ? templateFolderPath
+				+ File.separator + templateFileName.toLowerCase()
+				: templateFileName.toLowerCase();
+		StringBuilder baseTemplatePath = new StringBuilder("app"
+				+ File.separator + "views" + File.separator + "scaffold"
+				+ File.separator);
+		if (type != TargetFileType.LAYOUT) {
+			baseTemplatePath.append(type.getPath() + File.separator);
+		}
+		String templatePath = baseTemplatePath.toString() + sourceFileName
+				+ type.getSourceSuffix();
 		String targetPath = "app" + File.separator + type.getPath()
-				+ File.separator + fileName + ".java";
+				+ File.separator + targetFileName + type.getTargetSuffix();
+		ensureDirectoryExists(targetPath);
 		return new String[] { templatePath, targetPath };
 	}
 
@@ -214,41 +250,19 @@ public class ScaffoldingGenerator {
 		}
 
 		Logger.info("Generating controller: " + entity.getControllerName());
-		String controllerSourcePath = "app" + File.separator + "controllers"
-				+ File.separator + entity.getControllerName() + ".java";
-		String controllerTemplatePath = "app" + File.separator + "views"
-				+ File.separator + "scaffold" + File.separator + "controllers"
-				+ File.separator + "controller."
-				+ entity.getModelType().name().toLowerCase() + ".html";
-
-		generateForEntity(controllerTemplatePath, controllerSourcePath, entity);
-	}
-
-	private void generateForEntity(String templatePath, String targetPath,
-			Entity entity) {
-		Map<String, Object> templateArgs = new HashMap<String, Object>();
-		templateArgs.put("entity", entity);
-		generate(templatePath, targetPath, templateArgs);
+		generateForEntity(entity, TargetFileType.CONTROLLER, null, "controller."
+				+ entity.getModelType().name(), entity.getControllerName());
 	}
 
 	private void generateHome() {
-		Map<String, Object> templateArgs = new HashMap<String, Object>();
-		String sourcePath = "app" + File.separator + "views" + File.separator
-				+ "Application" + File.separator + "index.html";
-		String templatePath = "app" + File.separator + "views" + File.separator
-				+ "scaffold" + File.separator + "views" + File.separator
-				+ "Application" + File.separator + "index.html";
-		generate(templatePath, sourcePath, templateArgs);
+		generate(TargetFileType.VIEW, "Application", "index", "Application"
+				+ File.separator + "index");
 	}
 
 	// generate the layout file
 	private void generateLayout() {
 		Logger.info("Generating layout: main.html");
-		String sourcePath = "app" + File.separator + "views" + File.separator
-				+ "scaffold" + File.separator + "main.html";
-		String targetPath = "app" + File.separator + "views" + File.separator
-				+ "main.html";
-		generate(sourcePath, targetPath);
+		generate(TargetFileType.LAYOUT, "main", "views" + File.separator + "main");
 	}
 
 	private void copyFile(String sourcePath, String targetPath) {
@@ -300,16 +314,10 @@ public class ScaffoldingGenerator {
 	private void generateViewsForEntity(Entity entity) {
 		// create the view folder if necessary
 		Logger.info("Generating views for " + entity.getControllerName());
-		String targetViewPath = "app" + File.separator + "views"
-				+ File.separator + entity.getControllerName() + File.separator;
-		String baseViewTemplatePath = "app" + File.separator + "views"
-				+ File.separator + "scaffold" + File.separator + "views"
-				+ File.separator + "Entity" + File.separator;
-		ensureDirectoryExists(targetViewPath);
 		for (String view : VIEW_HTMLS) {
-			String modelViewTemplatePath = baseViewTemplatePath + view;
-			generateForEntity(modelViewTemplatePath,
-					targetViewPath + view, entity);
+			generateForEntity(entity, TargetFileType.VIEW, "Entity",
+					File.separator + view, entity.getControllerName()
+							+ File.separator + view);
 		}
 	}
 

@@ -1,3 +1,8 @@
+2010-8-10
+
+* added support for ManyToOne relationships
+* minor refactoring of view/controller template generation code
+
 2010-8-9
 
 * added NoScaffolding and ViewScaffoldingOverride annotations
