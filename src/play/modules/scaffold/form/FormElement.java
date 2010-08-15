@@ -86,6 +86,10 @@ public class FormElement {
 		return formElementType == FormElementType.MANY_TO_ONE;
 	}
 
+	public boolean isManyToManyRelation() {
+		return formElementType == FormElementType.MANY_TO_MANY;
+	}
+
 	public boolean isRequired() {
 		return required;
 	}

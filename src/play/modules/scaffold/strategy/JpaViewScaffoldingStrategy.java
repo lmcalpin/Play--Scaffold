@@ -19,12 +19,14 @@
 package play.modules.scaffold.strategy;
 
 import java.lang.reflect.Field;
-import java.util.Date;
 import java.util.List;
+
+import javax.persistence.OneToOne;
+
+import org.apache.commons.lang.StringUtils;
 
 import play.modules.scaffold.form.FormElement;
 import play.modules.scaffold.form.FormElementType;
-import play.modules.scaffold.utils.Enums;
 import play.modules.scaffold.utils.Fields;
 
 public class JpaViewScaffoldingStrategy extends DefaultViewScaffoldingStrategy {
@@ -41,6 +43,14 @@ public class JpaViewScaffoldingStrategy extends DefaultViewScaffoldingStrategy {
 		}
 		if (annotations.contains("javax.persistence.Id")) {
 			return new FormElement(defaultValue, FormElementType.HIDDEN);
+		}
+		if (annotations.contains("javax.persistence.OneToOne")) {
+			OneToOne oneToOne = field.getAnnotation(OneToOne.class);
+			if (StringUtils.isEmpty(oneToOne.mappedBy()))
+			{
+				return null;
+			}
+			return new FormElement(defaultValue, FormElementType.MANY_TO_ONE);
 		}
 		if (annotations.contains("javax.persistence.ManyToOne")) {
 			return new FormElement(defaultValue, FormElementType.MANY_TO_ONE);

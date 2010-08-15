@@ -3,6 +3,7 @@ package controllers;
 import java.util.List;
 import ${entity.package}.${entity.name};
 import play.mvc.Controller;
+import play.i18n.Messages;
 import play.data.validation.Validation;
 import play.data.validation.Valid;
 import play.db.jpa.JPA;
@@ -37,23 +38,21 @@ public class ${entity.controllerName} extends Controller {
 	
 	public static void save(${entity.name} entity) {
 		if (validation.hasErrors()) {
-			flash.error("Validation error");
-      		validation.keep();
-			create(entity);
+			flash.error(Messages.get("scaffold.validation"));
+			render("${entity.controllerName}/create.html", entity);
 		}
 		JPA.em().persist(entity);
-		flash.success("${entity.name} was created");
+		flash.success(Messages.get("scaffold.created", "${entity.name}"));
 		index();
 	}
 
 	public static void update(${entity.name} entity) {
 		if (validation.hasErrors()) {
-			flash.error("Validation error");
-      		validation.keep();
-			edit(entity);
+			flash.error(Messages.get("scaffold.validation"));
+			render("${entity.controllerName}/edit.html", entity);
 		}
 		JPA.em().merge(entity);
-		flash.success("${entity.name} was updated");
+		flash.success(Messages.get("scaffold.updated", "${entity.name}"));
 		index();
 	}
 

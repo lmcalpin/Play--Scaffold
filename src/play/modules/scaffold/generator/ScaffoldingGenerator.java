@@ -117,7 +117,7 @@ public class ScaffoldingGenerator {
 					"! Failed to generate output successfully: "
 							+ e.getMessage());
 		} catch (Throwable t) {
-			Logger.fatal(t, "! Unexpected error processing template", args);
+			Logger.fatal(t, "! Unexpected error processing template: " + templateFile.getName(), args);
 			System.exit(-1);
 		}
 	}
@@ -233,12 +233,13 @@ public class ScaffoldingGenerator {
 		if (type != TargetFileType.LAYOUT) {
 			baseTemplatePath.append(type.getPath() + File.separator);
 		}
-		String templatePath = baseTemplatePath.toString() + sourceFileName
+		String templateFile = baseTemplatePath.toString() + sourceFileName
 				+ type.getSourceSuffix();
 		String targetPath = "app" + File.separator + type.getPath()
-				+ File.separator + targetFileName + type.getTargetSuffix();
+				+ File.separator;
 		ensureDirectoryExists(targetPath);
-		return new String[] { templatePath, targetPath };
+		String targetFile = targetPath + targetFileName + type.getTargetSuffix();
+		return new String[] { templateFile, targetFile };
 	}
 
 	private void generateController(Entity entity) {

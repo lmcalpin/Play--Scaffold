@@ -23,6 +23,7 @@ import java.util.List;
 
 import play.Logger;
 import play.Play;
+import play.i18n.MessagesPlugin;
 import play.modules.scaffold.entity.Entity;
 import play.modules.scaffold.entity.ModelType;
 import play.modules.scaffold.generator.ScaffoldingGenerator;
@@ -49,7 +50,9 @@ public class Generate {
 		File root = new File(System.getProperty("application.path"));
 		Play.init(root, System.getProperty("play.id", ""));
 		Thread.currentThread().setContextClassLoader(Play.classloader);
-
+		MessagesPlugin plugin = new MessagesPlugin();
+		plugin.onApplicationStart();
+		
 		// default options
 		boolean forceOverwrite = false;
 		String includeRegEx = null;
