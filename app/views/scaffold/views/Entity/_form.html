@@ -26,12 +26,15 @@
 					<select name="entity.${elem.name}">
 						#{list elem.options, as: 'option'}
 							<option value="${option}" 
-								#{generateExpression entity:[elem.name,option], expr:'(entity?.$1?.name() == "$2") ? "selected":""' /}>${option}</option>
+								#{generateExpression entity:[elem.name,option], expr:'(entity?.$1?.name() == \'$2\') ? \'selected\':\'\'' /}>${option}</option>
 						#{/list}
 					</select>
 				#{/elseif}
 				#{elseif elem.isManyToOneRelation()}
 					<select name="entity.${elem.name}.id">
+            #{ifnot elem.isRequired()}
+                    <option value="">&{'scaffold.none'}</option>              
+            #{/ifnot}
 					${"%{"} ${play.modules.scaffold.generator.DatabaseAccessScaffolding.allFor(elem.fieldType)}.sort{ it.toString() }.each() { }%
 						%{ String idField = play.modules.scaffold.generator.DatabaseAccessScaffolding.entityFor(elem.fieldType).idField %}
 						${"%{"}
