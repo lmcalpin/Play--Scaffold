@@ -225,19 +225,27 @@ public class ScaffoldingGenerator {
 	private String[] getPaths(TargetFileType type, String templateFolderPath,
 			String templateFileName, String targetFileName) {
 		String sourceFileName = templateFolderPath != null ? templateFolderPath
-				+ File.separator + templateFileName.toLowerCase()
+				+ '/' + templateFileName.toLowerCase()
 				: templateFileName.toLowerCase();
 		StringBuilder baseTemplatePath = new StringBuilder("app"
-				+ File.separator + "views" + File.separator + "scaffold"
-				+ File.separator);
+				+ '/' + "views" + '/' + "scaffold"
+				+ '/');
 		if (type != TargetFileType.LAYOUT) {
-			baseTemplatePath.append(type.getPath() + File.separator);
+			baseTemplatePath.append(type.getPath() + '/');
 		}
 		String templateFile = baseTemplatePath.toString() + sourceFileName
 				+ type.getSourceSuffix();
-		String targetPath = "app" + File.separator + type.getPath()
-				+ File.separator;
+		String targetPath = "app" + '/';
+		String additionalPath = type.getPath();
+		if (additionalPath.length() > 0)
+				targetPath = targetPath + additionalPath + '/';
 		ensureDirectoryExists(targetPath);
+		if (targetFileName.contains("/")) {
+			String[] fileSplit = targetFileName.split("/");
+			if (fileSplit.length >= 2) {
+				ensureDirectoryExists(targetPath + '/' + fileSplit[0]);
+			}
+		}
 		String targetFile = targetPath + targetFileName + type.getTargetSuffix();
 		return new String[] { templateFile, targetFile };
 	}
@@ -257,13 +265,13 @@ public class ScaffoldingGenerator {
 
 	private void generateHome() {
 		generate(TargetFileType.VIEW, "Application", "index", "Application"
-				+ File.separator + "index");
+				+ '/' + "index");
 	}
 
 	// generate the layout file
 	private void generateLayout() {
 		Logger.info("Generating layout: main.html");
-		generate(TargetFileType.LAYOUT, "main", "views" + File.separator + "main");
+		generate(TargetFileType.LAYOUT, "main", "views" + '/' + "main");
 	}
 
 	private void copyFile(String sourcePath, String targetPath) {
@@ -302,13 +310,13 @@ public class ScaffoldingGenerator {
 			Logger.error(e, "Can't load User class");
 		}
 		// copy Secure/login.html
-		String sourcePath = "app" + File.separator + "views" + File.separator
-				+ "scaffold" + File.separator + "views" + File.separator
-				+ "Secure" + File.separator + "login.html";
-		String securePath = "app" + File.separator + "views" + File.separator
+		String sourcePath = "app" + '/' + "views" + '/'
+				+ "scaffold" + '/' + "views" + '/'
+				+ "Secure" + '/' + "login.html";
+		String securePath = "app" + '/' + "views" + '/'
 				+ "Secure";
 		ensureDirectoryExists(securePath);
-		String targetPath = securePath + File.separator + "login.html";
+		String targetPath = securePath + '/' + "login.html";
 		copyFile(sourcePath, targetPath);
 	}
 
@@ -317,8 +325,8 @@ public class ScaffoldingGenerator {
 		Logger.info("Generating views for " + entity.getControllerName());
 		for (String view : VIEW_HTMLS) {
 			generateForEntity(entity, TargetFileType.VIEW, "Entity",
-					File.separator + view, entity.getControllerName()
-							+ File.separator + view);
+					'/' + view, entity.getControllerName()
+							+ '/' + view);
 		}
 	}
 
