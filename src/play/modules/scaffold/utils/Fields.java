@@ -20,17 +20,25 @@ package play.modules.scaffold.utils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class Fields {
-	public static List<String> annotations(Field field) {
+	public static List<String> annotationNames(Field field) {
 		List<String> output = new ArrayList<String>();
 		Annotation[] annotations = field.getAnnotations();
 		for (Annotation ann : annotations) {
 			output.add(ann.annotationType().getName());
+		}
+		return output;
+	}
+	
+	public static List<Class<? extends Annotation>> annotations(Field field ) {
+		List<Class<? extends Annotation>> output = new ArrayList<Class<? extends Annotation>>();
+		Annotation[] annotations = field.getAnnotations();
+		for (Annotation ann : annotations) {
+			output.add(ann.annotationType());
 		}
 		return output;
 	}

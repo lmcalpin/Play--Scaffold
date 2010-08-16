@@ -110,6 +110,17 @@ public class Generate {
 			}
 		}
 
+		// validate flags 
+		if (includeLogin) {
+			try {
+				Class.forName("controllers.Secure");
+			} catch (ClassNotFoundException e) {
+				Logger.warn(" ! controllers.Secure could not be found");
+				Logger.warn(" ! check application.conf to ensure module.secure is imported");
+				includeLogin = false;
+			}
+		}
+
 		// Locate domain model classes that we can process.
 		// Currently, we only support classes that extend the
 		// play.db.jpa.Model or siena.Model classes.

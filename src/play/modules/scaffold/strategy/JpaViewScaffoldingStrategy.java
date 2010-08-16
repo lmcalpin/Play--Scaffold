@@ -18,9 +18,14 @@
  */
 package play.modules.scaffold.strategy;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.util.Collection;
 import java.util.List;
 
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import org.apache.commons.lang.StringUtils;
@@ -36,24 +41,40 @@ public class JpaViewScaffoldingStrategy extends DefaultViewScaffoldingStrategy {
 		FormElement defaultValue = super.render(field);
 		if (defaultValue == null)
 			return null;
-		List<String> annotations = Fields.annotations(field);
+		List<Class<? extends Annotation>> annotations = Fields.annotations(field);
 		if (defaultValue.getType() == FormElementType.TEXT
-				&& annotations.contains("javax.persistence.Lob")) {
+				&& annotations.contains(javax.persistence.Lob.class)) {
 			return new FormElement(defaultValue, FormElementType.TEXTAREA);
 		}
-		if (annotations.contains("javax.persistence.Id")) {
+		if (annotations.contains(javax.persistence.Id.class)) {
 			return new FormElement(defaultValue, FormElementType.HIDDEN);
 		}
-		if (annotations.contains("javax.persistence.OneToOne")) {
-			OneToOne oneToOne = field.getAnnotation(OneToOne.class);
-			if (StringUtils.isEmpty(oneToOne.mappedBy()))
-			{
+		if (annotations.contains(javax.persistence.OneToOne.class)) {
+			OneToOne ann = field.getAnnotation(OneToOne.class);
+			if (!StringUtils.isEmpty(ann.mappedBy())) {
 				return null;
 			}
-			return new FormElement(defaultValue, FormElementType.MANY_TO_ONE);
+			return new FormElement(defaultValue, FormElementType.RELATION_SINGLE);
 		}
-		if (annotations.contains("javax.persistence.ManyToOne")) {
-			return new FormElement(defaultValue, FormElementType.MANY_TO_ONE);
+		if (annotations.contains(javax.persistence.ManyToOne.class)) {
+			return new FormElement(defaultValue, FormElementType.RELATION_SINGLE);
+		}
+		if (Collection.class.isAssignableFrom(field.getType())) {
+            Class<?> parameterizedType = (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
+			if (annotations.contains(javax.persistence.OneToMany.class)) {
+				OneToMany ann = field.getAnnotation(OneToMany.class);
+				if (!StringUtils.isEmpty(ann.mappedBy())) {
+					return null;
+				}
+				return new FormElement(defaultValue, parameterizedType, FormElementType.RELATION_MANY);
+			}
+			if (annotations.contains(javax.persistence.ManyToMany.class)) {
+				ManyToMany ann = field.getAnnotation(ManyToMany.class);
+				if (!StringUtils.isEmpty(ann.mappedBy())) {
+					return null;
+				}
+				return new FormElement(defaultValue, parameterizedType, FormElementType.RELATION_MANY);
+			}
 		}
 		return defaultValue;
 	}

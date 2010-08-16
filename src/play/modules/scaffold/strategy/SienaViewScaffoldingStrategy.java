@@ -33,7 +33,7 @@ public class SienaViewScaffoldingStrategy extends
 		FormElement defaultValue = super.render(field);
 		if (defaultValue == null)
 			return null;
-		List<String> annotations = Fields.annotations(field);
+		List<String> annotations = Fields.annotationNames(field);
 		if (defaultValue.getType() == FormElementType.TEXT
 				&& annotations.contains("siena.Text")) {
 			return new FormElement(defaultValue, FormElementType.TEXTAREA);

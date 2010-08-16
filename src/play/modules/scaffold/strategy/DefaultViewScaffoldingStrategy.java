@@ -36,7 +36,7 @@ public class DefaultViewScaffoldingStrategy implements ViewScaffoldingStrategy {
 		FormElementType type;
 		List<String> options = null;
 		Class<?> classType = field.getType();
-		List<String> annotations = Fields.annotations(field);
+		List<String> annotations = Fields.annotationNames(field);
 		if (classType.equals(Boolean.class) || classType.equals(boolean.class)) {
 			type = FormElementType.CHECKBOX;
 		} else if (classType.equals(Date.class)) {

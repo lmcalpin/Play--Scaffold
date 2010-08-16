@@ -44,3 +44,14 @@ to control this behavior:
 @ViewScaffoldingOverride: this lets you define the FormElementType that you would like an annotated field to
 be rendered as
 
+* KNOWN ISSUES *
+
+ManyToOne dropdowns will show a (None) field if they are not flagged with the @Required annotation.  On Play!
+1.0, this binds to an empty model with a null id which will likely fail to save due to a TransientObjectException.
+On Play! 1.1, this binds to a null field, which is what we would typically want.
+
+ManyToMany multiple selection boxes do not work on Play! 1.0.  They do appear to work as expected on Play! 1.1.
+
+Because both of these issues work on Play! 1.1, no attempt will be made to correct them.  Once Play! 1.1 is released
+to production, no further attempt to preserve compatibility with Play! 1.0 will be made.
+

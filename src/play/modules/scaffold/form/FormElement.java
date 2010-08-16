@@ -46,8 +46,19 @@ public class FormElement {
 		this.formElementType = formElementType;
 	}
 
+	public FormElement(FormElement copy, Class<?> fieldType, FormElementType formElementType) {
+		this.name = copy.name;
+		this.fieldType = fieldType;
+		this.options = copy.options;
+		this.formElementType = formElementType;
+	}
+
 	public String getName() {
 		return name;
+	}
+	
+	public Class<?> getFieldType() {
+		return fieldType;
 	}
 
 	public FormElementType getType() {
@@ -83,11 +94,11 @@ public class FormElement {
 	}
 
 	public boolean isManyToOneRelation() {
-		return formElementType == FormElementType.MANY_TO_ONE;
+		return formElementType == FormElementType.RELATION_SINGLE;
 	}
 
 	public boolean isManyToManyRelation() {
-		return formElementType == FormElementType.MANY_TO_MANY;
+		return formElementType == FormElementType.RELATION_MANY;
 	}
 
 	public boolean isRequired() {

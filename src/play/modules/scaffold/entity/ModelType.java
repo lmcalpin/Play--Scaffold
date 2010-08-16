@@ -43,7 +43,7 @@ public enum ModelType {
 	}
 	
 	public boolean isId(Field field) {
-		List<String> annotations = Fields.annotations(field);
+		List<String> annotations = Fields.annotationNames(field);
 		switch (this) {
 		case PLAY_JPA:
 			return (annotations.contains("javax.persistence.Id"));
