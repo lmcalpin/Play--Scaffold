@@ -30,44 +30,46 @@
 						#{/list}
 					</select>
 				#{/elseif}
-				#{elseif elem.isManyToOneRelation()}
-					<select name="entity.${elem.name}.id">
-		            #{ifnot elem.isRequired()}
-		                    <option value="">&{'scaffold.none'}</option>              
-		            #{/ifnot}
-					${"%{"} ${play.modules.scaffold.generator.DatabaseAccessScaffolding.allFor(elem.fieldType)}.sort{ it.toString() }.each() { }%
-						%{ String idField = play.modules.scaffold.generator.DatabaseAccessScaffolding.entityFor(elem.fieldType).idField %}
-						${"%{"}
-							selected = false;
-							if (entity?.${elem.name}?.${idField} == it.id) {
-								selected = true
-							}
-						}%
-						<option value="#{generateExpression entity:idField, expr:'it?.$1'/}" #{generateExpression expr:'selected ? \'selected\'.raw() : \'\''/}>#{generateExpression entity:'it', expr:'$1'/}</option>
-					${"%{"} } }%
-					</select>
-				#{/elseif}
-				#{elseif elem.isManyToManyRelation()}
-					<select name="entity.${elem.name}.id" multiple>
-					${"%{"} ${play.modules.scaffold.generator.DatabaseAccessScaffolding.allFor(elem.fieldType)}.sort{ it.toString() }.each() { }%
-						%{ String idField = play.modules.scaffold.generator.DatabaseAccessScaffolding.entityFor(elem.fieldType).idField %}
-						${"%{"}
-							selected = false;
-							entity?.${elem.name}.each() { f ->
-								if (f.id == it?.id)
-									selected = true;
-							}
-						}%
-						<option value="#{generateExpression entity:idField, expr:'it?.$1'/}" #{generateExpression expr:'selected ? \'selected\'.raw() : \'\''/}>#{generateExpression entity:'it', expr:'$1'/}</option>
-					${"%{"} } }%
-					</select>
+				#{elseif elem.isRelation()}
+				  #{if elem.isMultiple()}
+	          <select name="entity.${elem.name}.id" multiple>
+	          ${"%{"} ${play.modules.scaffold.generator.DatabaseAccessScaffolding.allFor(elem.fieldType)}.sort{ it.toString() }.each() { }%
+	            %{ String idField = play.modules.scaffold.generator.DatabaseAccessScaffolding.entityFor(elem.fieldType).idField %}
+	            ${"%{"}
+	              selected = false;
+	              entity?.${elem.name}.each() { f ->
+	                if (f.id == it?.id)
+	                  selected = true;
+	              }
+	            }%
+	            <option value="#{generateExpression entity:idField, expr:'it?.$1'/}" #{generateExpression expr:'selected ? \'selected\'.raw() : \'\''/}>#{generateExpression entity:'it', expr:'$1'/}</option>
+	          ${"%{"} } }%
+	          </select>
+				  #{/if}
+				  #{else}
+	          <select name="entity.${elem.name}.id">
+	                #{ifnot elem.isRequired()}
+	                        <option value="">&{'scaffold.none'}</option>              
+	                #{/ifnot}
+	          ${"%{"} ${play.modules.scaffold.generator.DatabaseAccessScaffolding.allFor(elem.fieldType)}.sort{ it.toString() }.each() { }%
+	            %{ String idField = play.modules.scaffold.generator.DatabaseAccessScaffolding.entityFor(elem.fieldType).idField %}
+	            ${"%{"}
+	              selected = false;
+	              if (entity?.${elem.name}?.${idField} == it.id) {
+	                selected = true
+	              }
+	            }%
+	            <option value="#{generateExpression entity:idField, expr:'it?.$1'/}" #{generateExpression expr:'selected ? \'selected\'.raw() : \'\''/}>#{generateExpression entity:'it', expr:'$1'/}</option>
+	          ${"%{"} } }%
+	          </select>
+				  #{/else}
 				#{/elseif}
 				#{elseif elem.isTextArea()}
 					<textarea name="entity.${elem.name}" rows="10" cols="40">#{generateExpression entity:elem.name, expr:'entity?.$1' /}</textarea>
 				#{/elseif}
-		        #{elseif elem.isPassword()}
-		          <input type="password" name="entity.${elem.name}" value="#{generateExpression entity:elem.name, expr:'entity?.$1' /}"/>
-		        #{/elseif}
+        #{elseif elem.isPassword()}
+          <input type="password" name="entity.${elem.name}" value="#{generateExpression entity:elem.name, expr:'entity?.$1' /}"/>
+        #{/elseif}
 				#{elseif elem.isHidden()}
 					<input type="hidden" name="entity.${elem.name}" value="#{generateExpression entity:elem.name, expr:'entity?.$1' /}"/>
 				#{/elseif}

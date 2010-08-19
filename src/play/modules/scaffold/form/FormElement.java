@@ -27,6 +27,7 @@ public class FormElement {
 	private FormElementType formElementType;
 	private List<String> options;
 	private boolean required;
+	private boolean multiple;
 
 	public FormElement(Field field, FormElementType type) {
 		this(field, type, null);
@@ -40,10 +41,7 @@ public class FormElement {
 	}
 
 	public FormElement(FormElement copy, FormElementType formElementType) {
-		this.name = copy.name;
-		this.fieldType = copy.fieldType;
-		this.options = copy.options;
-		this.formElementType = formElementType;
+		this(copy, copy.fieldType, formElementType);
 	}
 
 	public FormElement(FormElement copy, Class<?> fieldType, FormElementType formElementType) {
@@ -93,12 +91,8 @@ public class FormElement {
 		return formElementType == FormElementType.TEXTAREA;
 	}
 
-	public boolean isManyToOneRelation() {
-		return formElementType == FormElementType.RELATION_SINGLE;
-	}
-
-	public boolean isManyToManyRelation() {
-		return formElementType == FormElementType.RELATION_MANY;
+	public boolean isRelation() {
+		return formElementType == FormElementType.RELATION;
 	}
 
 	public boolean isRequired() {
@@ -107,6 +101,19 @@ public class FormElement {
 
 	public void setRequired(boolean required) {
 		this.required = required;
+	}
+
+	public boolean isMultiple() {
+		return multiple;
+	}
+
+	public void setMultiple(boolean multiple) {
+		this.multiple = multiple;
+	}
+	
+	public FormElement acceptMultiple() {
+		this.multiple = true;
+		return this;
 	}
 
 	public List<String> getOptions() {

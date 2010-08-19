@@ -259,8 +259,7 @@ public class ScaffoldingGenerator {
 		}
 
 		Logger.info("Generating controller: " + entity.getControllerName());
-		generateForEntity(entity, TargetFileType.CONTROLLER, null, "controller."
-				+ entity.getModelType().name(), entity.getControllerName());
+		generateForEntity(entity, TargetFileType.CONTROLLER, null, "controller", entity.getControllerName());
 	}
 
 	private void generateHome() {

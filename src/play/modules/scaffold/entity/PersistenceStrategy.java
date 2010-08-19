@@ -27,8 +27,10 @@ import play.modules.scaffold.strategy.ViewScaffoldingStrategy;
 import play.modules.scaffold.utils.Classes;
 import play.modules.scaffold.utils.Fields;
 
-public enum ModelType {
-	PLAY_JPA, PURE_JPA, SIENA;
+public enum PersistenceStrategy {
+	PLAY_JPA, 
+	PURE_JPA, 
+	SIENA;
 
 	public ViewScaffoldingStrategy getViewScaffoldingStrategy() {
 		switch (this) {
@@ -57,33 +59,31 @@ public enum ModelType {
 	}
 
 	// Determine whether this is a play.db.jpa.Model model or an alternative
-	// model,
-	// such as a siena.Model. Since we can't be sure that alternative model
-	// support classes,
-	// such as siena.Model, are available on the classpath, we determine all
-	// superclasses
-	// for our model, and compile a List of class names that our model is
-	// descended from.
+	// model, such as a siena.Model. Since we can't be sure that alternative 
+	// model support classes, such as siena.Model, are available on the 
+	// classpath, we determine all superclasses for our model, and compile 
+	// a List of class names that our model is descended from.
+	//
 	// Then, we simply see if the class name for our database support class is
 	// in that list.
-	public static ModelType forClass(Class<?> clazz) {
+	public static PersistenceStrategy forClass(Class<?> clazz) {
 		List<String> superclasses = Classes.superclasses(clazz);
 		List<String> annotations = Classes.annotations(clazz);
 		if (superclasses.contains("play.db.jpa.Model")) {
-			return ModelType.PLAY_JPA;
+			return PersistenceStrategy.PLAY_JPA;
 		}
 		if (annotations.contains("javax.persistence.Entity")) {
-			return ModelType.PURE_JPA;
+			return PersistenceStrategy.PURE_JPA;
 		}
 		if (superclasses.contains("siena.Model")) {
-			return ModelType.SIENA;
+			return PersistenceStrategy.SIENA;
 		}
 		// unsupported model
 		return null;
 	}
 
 	public boolean getUsesPlayModelSupport() {
-		if (this == ModelType.PURE_JPA)
+		if (this == PersistenceStrategy.PURE_JPA)
 			return false;
 		return true;
 	}

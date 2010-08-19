@@ -42,7 +42,8 @@ public class Entity {
 	private String packageName;
 	private String name;
 	private String controllerName;
-	private ModelType modelType;
+	private Class<?> modelType;
+	private PersistenceStrategy persistenceStrategy;
 	
 	// currently, we only support single field primary keys
 	private String idField;
@@ -53,6 +54,7 @@ public class Entity {
 	private ViewScaffoldingStrategy scaffoldingStrategy;
 
 	public Entity(Class<?> clazz) {
+		this.modelType = clazz;
 		this.name = clazz.getSimpleName();
 		this.packageName = Classes.getPackageName(clazz);
 		Scaffolding scaffolding = clazz.getAnnotation(Scaffolding.class);
@@ -62,13 +64,13 @@ public class Entity {
 		}
 		this.controllerName = controllerOverride != null ? controllerOverride
 				: Strings.pluralize(name);
-		this.modelType = ModelType.forClass(clazz);
-		this.scaffoldingStrategy = modelType.getViewScaffoldingStrategy();
+		this.persistenceStrategy = PersistenceStrategy.forClass(clazz);
+		this.scaffoldingStrategy = persistenceStrategy.getViewScaffoldingStrategy();
 		this.formElements = new ArrayList<FormElement>();
 
 		List<Field> fields = publicFields(clazz);
 		for (Field field : fields) {
-			if (modelType.isId(field)) {
+			if (persistenceStrategy.isId(field)) {
 				idField = field.getName();
 				idClass = field.getType();
 			}
@@ -108,6 +110,10 @@ public class Entity {
 		return idField;
 	}
 
+	public Class<?> getModelType() {
+		return modelType;
+	}
+
 	public Class<?> getIdClass() {
 		return idClass;
 	}
@@ -124,8 +130,8 @@ public class Entity {
 		return packageName;
 	}
 
-	public ModelType getModelType() {
-		return modelType;
+	public PersistenceStrategy getPersistenceStrategy() {
+		return persistenceStrategy;
 	}
 
 	public ViewScaffoldingStrategy getScaffoldingStrategy() {
@@ -137,7 +143,7 @@ public class Entity {
 	}
 
 	public boolean getUsesPlayModelSupport() {
-		return modelType.getUsesPlayModelSupport();
+		return persistenceStrategy.getUsesPlayModelSupport();
 	}
 
 	@Override

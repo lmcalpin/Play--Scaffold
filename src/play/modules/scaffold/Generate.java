@@ -25,7 +25,7 @@ import play.Logger;
 import play.Play;
 import play.i18n.MessagesPlugin;
 import play.modules.scaffold.entity.Entity;
-import play.modules.scaffold.entity.ModelType;
+import play.modules.scaffold.entity.PersistenceStrategy;
 import play.modules.scaffold.generator.ScaffoldingGenerator;
 
 /**
@@ -133,7 +133,7 @@ public class Generate {
 			// If this model is of a supported type, queue it up
 			// so the ScaffoldGenerator will create its controller
 			// and views.
-			if (ModelType.forClass(clazz) != null) {
+			if (PersistenceStrategy.forClass(clazz) != null) {
 				String simpleName = clazz.getSimpleName();
 				boolean includeEntity = false;
 				// by default, include all entities if no --include= value is

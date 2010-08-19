@@ -54,10 +54,10 @@ public class JpaViewScaffoldingStrategy extends DefaultViewScaffoldingStrategy {
 			if (!StringUtils.isEmpty(ann.mappedBy())) {
 				return null;
 			}
-			return new FormElement(defaultValue, FormElementType.RELATION_SINGLE);
+			return new FormElement(defaultValue, FormElementType.RELATION);
 		}
 		if (annotations.contains(javax.persistence.ManyToOne.class)) {
-			return new FormElement(defaultValue, FormElementType.RELATION_SINGLE);
+			return new FormElement(defaultValue, FormElementType.RELATION);
 		}
 		if (Collection.class.isAssignableFrom(field.getType())) {
             Class<?> parameterizedType = (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
@@ -66,14 +66,14 @@ public class JpaViewScaffoldingStrategy extends DefaultViewScaffoldingStrategy {
 				if (!StringUtils.isEmpty(ann.mappedBy())) {
 					return null;
 				}
-				return new FormElement(defaultValue, parameterizedType, FormElementType.RELATION_MANY);
+				return new FormElement(defaultValue, parameterizedType, FormElementType.RELATION).acceptMultiple();
 			}
 			if (annotations.contains(javax.persistence.ManyToMany.class)) {
 				ManyToMany ann = field.getAnnotation(ManyToMany.class);
 				if (!StringUtils.isEmpty(ann.mappedBy())) {
 					return null;
 				}
-				return new FormElement(defaultValue, parameterizedType, FormElementType.RELATION_MANY);
+				return new FormElement(defaultValue, parameterizedType, FormElementType.RELATION).acceptMultiple();
 			}
 		}
 		return defaultValue;
