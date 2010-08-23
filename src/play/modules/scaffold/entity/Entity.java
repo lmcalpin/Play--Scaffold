@@ -18,13 +18,15 @@
  */
 package play.modules.scaffold.entity;
 
-import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import play.modules.scaffold.Scaffolding;
+import play.modules.scaffold.ScaffoldingException;
 import play.modules.scaffold.form.FormElement;
 import play.modules.scaffold.strategy.ViewScaffoldingStrategy;
 import play.modules.scaffold.utils.Classes;
@@ -44,7 +46,7 @@ public class Entity {
 	private String controllerName;
 	private Class<?> modelType;
 	private PersistenceStrategy persistenceStrategy;
-	
+
 	// currently, we only support single field primary keys
 	private String idField;
 	private Class<?> idClass;
@@ -64,7 +66,12 @@ public class Entity {
 		}
 		this.controllerName = controllerOverride != null ? controllerOverride
 				: Strings.pluralize(name);
-		this.persistenceStrategy = PersistenceStrategy.forClass(clazz);
+		this.persistenceStrategy = PersistenceStrategy.forModel(clazz);
+		if (persistenceStrategy == null)
+			persistenceStrategy = PersistenceStrategy.forEmbeddable(clazz);
+		if (persistenceStrategy == null) {
+			throw new ScaffoldingException("Could not determine persistence strategy for " + clazz.getName());
+		}
 		this.scaffoldingStrategy = persistenceStrategy.getViewScaffoldingStrategy();
 		this.formElements = new ArrayList<FormElement>();
 
@@ -181,5 +188,16 @@ public class Entity {
 	@Override
 	public String toString() {
 		return "Entity [packageName=" + packageName + ", name=" + name + "]";
+	}
+
+	private static Map<String, Entity> ENTITY_CACHE = new HashMap<String, Entity>();
+
+	public static Entity from(Class<?> clazz) {
+		Entity entity = ENTITY_CACHE.get(clazz.getName());
+		if (entity == null) {
+			entity = new Entity(clazz);
+			ENTITY_CACHE.put(clazz.getName(), entity);
+		}
+		return entity;
 	}
 }

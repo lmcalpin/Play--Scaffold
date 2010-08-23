@@ -16,7 +16,7 @@ import play.mvc.With;
 #{/if}
 public class ${entity.controllerName} extends Controller {
 	public static void index() {
-		List<${entity.name}> entities = ${play.modules.scaffold.generator.DatabaseAccessScaffolding.allFor(entity)};
+		List<${entity.name}> entities = ${play.modules.scaffold.generator.DatabaseAccessScaffolding.allFor(entity).raw()};
 		render(entities);
 	}
 
@@ -25,12 +25,12 @@ public class ${entity.controllerName} extends Controller {
 	}
 
 	public static void show(${entity.idClass.name} id) {
-    	${entity.name} entity = ${play.modules.scaffold.generator.DatabaseAccessScaffolding.findByIdFor(entity).raw()};
+    ${entity.name} entity = ${play.modules.scaffold.generator.DatabaseAccessScaffolding.findByIdFor(entity).raw()};
 		render(entity);
 	}
 
 	public static void edit(${entity.idClass.name} id) {
-    	${entity.name} entity = ${play.modules.scaffold.generator.DatabaseAccessScaffolding.findByIdFor(entity).raw()};
+    ${entity.name} entity = ${play.modules.scaffold.generator.DatabaseAccessScaffolding.findByIdFor(entity).raw()};
 		render(entity);
 	}
 

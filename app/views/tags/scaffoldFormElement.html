@@ -1,0 +1,85 @@
+    <div class="row">
+      <div class="label">
+        #{ifnot _element.isHidden()}
+          ${_element.name}
+        #{/ifnot}
+      </div>
+      <div class="field">
+        #{if _element.isCheckbox() }
+          <input type="checkbox" name="entity.${_element.path}"
+            #{generateExpression entity:_element.path('?.'), expr:'entity?.$1 ? \'checked\':\'\'' /}
+          />
+        #{/if}
+        #{elseif _element.isDate()}
+          <script type="text/javascript">
+            $(function() {
+              $("#${_element.path}").datepicker({ dateFormat: 'yy-mm-dd' } );
+            });
+          </script>
+          <!-- TODO: date format needs to come from application.conf -->
+          <input id="${_element.path}" type="text" name="entity.${_element.path}" 
+            value="#{generateExpression entity:_element.path('?.'), expr:'entity?.$1?.format(\'yyyy-MM-dd\')' /}"
+            size="10" />
+        #{/elseif}
+        #{elseif _element.isSelect()}
+          <select name="entity.${_element.path}">
+            #{list _element.options, as: 'option'}
+              <option value="${option}" 
+                #{generateExpression entity:[_element.path('?.'),option], expr:'(entity?.$1?.name() == \'$2\') ? \'selected\':\'\'' /}>${option}</option>
+            #{/list}
+          </select>
+        #{/elseif}
+        #{elseif _element.isRelation()}
+          #{if _element.isMultiple()}
+            <select name="entity.${_element.path}.id" multiple>
+            ${"%{"} ${play.modules.scaffold.generator.DatabaseAccessScaffolding.allFor(_element.fieldType)}.sort{ it.toString() }.each() { }%
+              %{ String idField = play.modules.scaffold.entity.Entity.from(_element.fieldType).idField %}
+              ${"%{"}
+                selected = false;
+                entity?.${_element.path}.each() { f ->
+                  if (f.id == it?.id)
+                    selected = true;
+                }
+              }%
+              <option value="#{generateExpression entity:idField, expr:'it?.$1'/}" #{generateExpression expr:'selected ? \'selected\'.raw() : \'\''/}>#{generateExpression entity:'it', expr:'$1'/}</option>
+            ${"%{"} } }%
+            </select>
+          #{/if}
+          #{else}
+            <select name="entity.${_element.path}.id">
+                  #{ifnot _element.isRequired()}
+                          <option value="">&{'scaffold.none'}</option>              
+                  #{/ifnot}
+            ${"%{"} ${play.modules.scaffold.generator.DatabaseAccessScaffolding.allFor(_element.fieldType)}.sort{ it.toString() }.each() { }%
+              %{ String idField = play.modules.scaffold.entity.Entity.from(_element.fieldType).idField %}
+              ${"%{"}
+                selected = false;
+                if (entity?.${_element.path}?.${idField} == it.id) {
+                  selected = true
+                }
+              }%
+              <option value="#{generateExpression entity:idField, expr:'it?.$1'/}" #{generateExpression expr:'selected ? \'selected\'.raw() : \'\''/}>#{generateExpression entity:'it', expr:'$1'/}</option>
+            ${"%{"} } }%
+            </select>
+          #{/else}
+        #{/elseif}
+        #{elseif _element.isTextArea()}
+          <textarea name="entity.${_element.path}" rows="10" cols="40">#{generateExpression entity:_element.path('?.'), expr:'entity?.$1' /}</textarea>
+        #{/elseif}
+        #{elseif _element.isPassword()}
+          <input type="password" name="entity.${_element.path}" value="#{generateExpression entity:_element.path('?.'), expr:'entity?.$1' /}"/>
+        #{/elseif}
+        #{elseif _element.isHidden()}
+          <input type="hidden" name="entity.${_element.path}" value="#{generateExpression entity:_element.path('?.'), expr:'entity?.$1' /}"/>
+        #{/elseif}
+        #{elseif _element.isEmbedded()}
+            #{list items:_element.fieldAsEntity.formElements, as:'elem'}
+             #{scaffoldFormElement element:elem /}
+            #{/list}        
+        #{/elseif}
+        #{else}
+          <input type="text" name="entity.${_element.path}" value="#{generateExpression entity:_element.path('?.'), expr:'entity?.$1' /}"/>
+        #{/else}
+      </div>
+      <span class="error">#{generateExpression entity:_element.path, expr:'errors.forKey(\'entity.$1\')' /}</span>
+    </div>

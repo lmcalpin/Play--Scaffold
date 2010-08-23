@@ -21,12 +21,16 @@ package play.modules.scaffold;
 import java.io.File;
 import java.util.List;
 
+import javax.persistence.GeneratedValue;
+
 import play.Logger;
 import play.Play;
 import play.i18n.MessagesPlugin;
 import play.modules.scaffold.entity.Entity;
 import play.modules.scaffold.entity.PersistenceStrategy;
+import play.modules.scaffold.generator.DatabaseAccessScaffolding;
 import play.modules.scaffold.generator.ScaffoldingGenerator;
+import play.modules.scaffold.utils.Fields;
 
 /**
  * Processes the scaffold:gen command. This command generates the scaffolding
@@ -133,7 +137,8 @@ public class Generate {
 			// If this model is of a supported type, queue it up
 			// so the ScaffoldGenerator will create its controller
 			// and views.
-			if (PersistenceStrategy.forClass(clazz) != null) {
+			PersistenceStrategy persistenceStrategy = PersistenceStrategy.forModel(clazz);
+			if (persistenceStrategy != null) {
 				String simpleName = clazz.getSimpleName();
 				boolean includeEntity = false;
 				// by default, include all entities if no --include= value is
@@ -152,6 +157,21 @@ public class Generate {
 				}
 				if (includeEntity) {
 					Entity entity = new Entity(clazz);
+					
+					// validate known limitations
+					if (persistenceStrategy == PersistenceStrategy.PURE_JPA) {
+						String idField = entity.getIdField();
+						if (idField == null) {
+							Logger.warn("Can not process %s because it needs an @Id annotated column", simpleName);
+							continue;
+						}
+						if (!Fields.annotations(clazz, idField).contains(GeneratedValue.class)) {
+							Logger.warn("Can not process %s because key must be auto-generated (use @GeneratedValue)", simpleName);
+							continue;
+						}
+					}
+					
+					// we appear to be good to go!
 					generator.addEntity(entity);
 				} else {
 					Logger.info("Skipping %s", simpleName);

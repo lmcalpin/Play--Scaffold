@@ -43,6 +43,16 @@ public class Fields {
 		return output;
 	}
 	
+	public static List<Class<? extends Annotation>> annotations(Class<?> clazz, String fieldName) {
+		List<Field> fields = Classes.publicFields(clazz);
+		for (Field field : fields) {
+			if (field.getName().equalsIgnoreCase(fieldName)) {
+				return annotations(field);
+			}
+		}
+		return null;
+	}
+	
 	public static boolean isNumeric(Field field) {
 		Class<?> type = field.getType();
 		return Classes.isNumeric(type);

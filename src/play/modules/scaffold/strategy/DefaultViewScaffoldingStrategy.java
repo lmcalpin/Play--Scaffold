@@ -47,6 +47,8 @@ public class DefaultViewScaffoldingStrategy implements ViewScaffoldingStrategy {
 			options = Enums.list(Enums.values(enumClass));
 		} else if (annotations.contains("play.data.validation.Password")) {
 			type = FormElementType.PASSWORD;
+		} else if (annotations.contains("javax.persistence.Embedded")) {
+			type = FormElementType.EMBEDDED;
 		} else {
 			type = FormElementType.TEXT;
 		}

@@ -21,6 +21,7 @@ package play.modules.scaffold.entity;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import play.modules.scaffold.ScaffoldingException;
 import play.modules.scaffold.strategy.JpaViewScaffoldingStrategy;
 import play.modules.scaffold.strategy.SienaViewScaffoldingStrategy;
 import play.modules.scaffold.strategy.ViewScaffoldingStrategy;
@@ -28,9 +29,7 @@ import play.modules.scaffold.utils.Classes;
 import play.modules.scaffold.utils.Fields;
 
 public enum PersistenceStrategy {
-	PLAY_JPA, 
-	PURE_JPA, 
-	SIENA;
+	PLAY_JPA, PURE_JPA, SIENA;
 
 	public ViewScaffoldingStrategy getViewScaffoldingStrategy() {
 		switch (this) {
@@ -43,7 +42,7 @@ public enum PersistenceStrategy {
 		}
 		return null;
 	}
-	
+
 	public boolean isId(Field field) {
 		List<String> annotations = Fields.annotationNames(field);
 		switch (this) {
@@ -55,18 +54,18 @@ public enum PersistenceStrategy {
 			return (annotations.contains("siena.Id"));
 		}
 		return false;
-		
+
 	}
 
 	// Determine whether this is a play.db.jpa.Model model or an alternative
-	// model, such as a siena.Model. Since we can't be sure that alternative 
-	// model support classes, such as siena.Model, are available on the 
-	// classpath, we determine all superclasses for our model, and compile 
+	// model, such as a siena.Model. Since we can't be sure that alternative
+	// model support classes, such as siena.Model, are available on the
+	// classpath, we determine all superclasses for our model, and compile
 	// a List of class names that our model is descended from.
 	//
 	// Then, we simply see if the class name for our database support class is
 	// in that list.
-	public static PersistenceStrategy forClass(Class<?> clazz) {
+	public static PersistenceStrategy forModel(Class<?> clazz) {
 		List<String> superclasses = Classes.superclasses(clazz);
 		List<String> annotations = Classes.annotations(clazz);
 		if (superclasses.contains("play.db.jpa.Model")) {
@@ -78,7 +77,13 @@ public enum PersistenceStrategy {
 		if (superclasses.contains("siena.Model")) {
 			return PersistenceStrategy.SIENA;
 		}
-		// unsupported model
+		return null;
+	}
+
+	public static PersistenceStrategy forEmbeddable(Class<?> clazz) {
+		List<String> annotations = Classes.annotations(clazz);
+		if (annotations.contains("javax.persistence.Embeddable"))
+			return PersistenceStrategy.PURE_JPA;
 		return null;
 	}
 

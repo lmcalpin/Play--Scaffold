@@ -26,5 +26,6 @@ public enum FormElementType {
 	TEXTAREA, 
 	HIDDEN, 
 	PASSWORD,
-	RELATION;
+	RELATION,
+	EMBEDDED;
 }
