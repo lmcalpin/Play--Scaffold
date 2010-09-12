@@ -48,15 +48,15 @@ public class JpaViewScaffoldingStrategy extends DefaultViewScaffoldingStrategy {
 		}
 		if (annotations.contains(javax.persistence.Id.class)) {
 			return new FormElement(defaultValue, FormElementType.HIDDEN);
-		}
-		if (annotations.contains(javax.persistence.OneToOne.class)) {
+		} else if (annotations.contains("javax.persistence.Embedded")) {
+			return new FormElement(defaultValue, FormElementType.EMBEDDED);
+		} else if (annotations.contains(javax.persistence.OneToOne.class)) {
 			OneToOne ann = field.getAnnotation(OneToOne.class);
 			if (!StringUtils.isEmpty(ann.mappedBy())) {
 				return null;
 			}
 			return new FormElement(defaultValue, FormElementType.RELATION);
-		}
-		if (annotations.contains(javax.persistence.ManyToOne.class)) {
+		} else if (annotations.contains(javax.persistence.ManyToOne.class)) {
 			return new FormElement(defaultValue, FormElementType.RELATION);
 		}
 		if (Collection.class.isAssignableFrom(field.getType())) {

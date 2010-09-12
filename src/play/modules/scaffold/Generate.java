@@ -117,7 +117,7 @@ public class Generate {
 		// validate flags 
 		if (includeLogin) {
 			try {
-				Class.forName("controllers.Secure");
+				Class.forName("controllers.Secure", false, Play.classloader);
 			} catch (ClassNotFoundException e) {
 				Logger.warn(" ! controllers.Secure could not be found");
 				Logger.warn(" ! check application.conf to ensure module.secure is imported");
