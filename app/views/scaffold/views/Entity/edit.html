@@ -4,7 +4,7 @@ ${"#{"}extends 'main.html' /}
 
 <div class="entity">
 ${"#{"}form @${entity.controllerName}.update(), id:'createForm'}
-	#{include 'scaffold/views/Entity/_form.html' /}
+	${"#{"}include '${entity.controllerName}/_form.html' /}
 	<input type="submit" name="submit" value="Save" />
 ${"#{/"}form}
 </div>

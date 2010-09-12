@@ -48,12 +48,13 @@ import play.vfs.VirtualFile;
  * @author Lawrence McAlpin
  */
 public class ScaffoldingGenerator {
+	private static final String FORM_HTML = "_form";
 	private static final String CREATE_HTML = "create";
 	private static final String SHOW_HTML = "show";
 	private static final String EDIT_HTML = "edit";
 	private static final String LIST_HTML = "index";
 
-	private static final List<String> VIEW_HTMLS = Arrays.asList(CREATE_HTML,
+	private static final List<String> VIEW_HTMLS = Arrays.asList(FORM_HTML, CREATE_HTML,
 			SHOW_HTML, EDIT_HTML, LIST_HTML);
 
 	private List<Entity> entities = new ArrayList<Entity>();
