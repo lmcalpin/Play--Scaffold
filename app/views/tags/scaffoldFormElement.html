@@ -59,6 +59,14 @@
         </select>
       #{/else}
     #{/elseif}
+    #{elseif _element.isList()}
+    	#{if Enum.class.isAssignableFrom(_element.getFieldType())}
+			${"#{"}list items:${_element.getFieldType().getName()}.values(), as:'en'} <input
+				type="checkbox" name="entity.${_element.path}" value="#{generateExpression entity:'en', expr:'$1'/}" ${"#{"}if entity?.${_element.path}?.contains(en)} checked ${"#{"}/if}>#{generateExpression entity:'en', expr:'$1'/}</input>
+				<br />
+			${"#{"}/list}    	
+    	#{/if}
+    #{/elseif}
     #{elseif _element.isTextArea()}
       <textarea name="entity.${_element.path}" rows="10" cols="40">#{generateExpression entity:_element.path('?.'), expr:'entity?.$1' /}</textarea>
     #{/elseif}

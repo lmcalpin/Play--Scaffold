@@ -41,14 +41,24 @@ public class JpaViewScaffoldingStrategy extends DefaultViewScaffoldingStrategy {
 		FormElement defaultValue = super.render(field);
 		if (defaultValue == null)
 			return null;
-		List<Class<? extends Annotation>> annotations = Fields.annotations(field);
+		// get the list of annotations
+		List<Class<? extends Annotation>> annotations = Fields
+				.annotations(field);
+		// also get the list of the names of the annotations -- this is a little
+		// redundant, but the reason we do this is because different versions of
+		// Play! support different versions of JPA, and we can't know at compile
+		// time which classes will be available... particularly, we currently
+		// support Play! 1.0 which uses JPA 1 and therefore won't have the
+		// ElementCollection annotation, while Play! 1.1, which uses JPA 2,
+		// does.
+		List<String> annotationNames = Fields.annotationNames(field);
 		if (defaultValue.getType() == FormElementType.TEXT
 				&& annotations.contains(javax.persistence.Lob.class)) {
 			return new FormElement(defaultValue, FormElementType.TEXTAREA);
 		}
 		if (annotations.contains(javax.persistence.Id.class)) {
 			return new FormElement(defaultValue, FormElementType.HIDDEN);
-		} else if (annotations.contains("javax.persistence.Embedded")) {
+		} else if (annotations.contains(javax.persistence.Embedded.class)) {
 			return new FormElement(defaultValue, FormElementType.EMBEDDED);
 		} else if (annotations.contains(javax.persistence.OneToOne.class)) {
 			OneToOne ann = field.getAnnotation(OneToOne.class);
@@ -60,20 +70,29 @@ public class JpaViewScaffoldingStrategy extends DefaultViewScaffoldingStrategy {
 			return new FormElement(defaultValue, FormElementType.RELATION);
 		}
 		if (Collection.class.isAssignableFrom(field.getType())) {
-            Class<?> parameterizedType = (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
+			Class<?> parameterizedType = (Class<?>) ((ParameterizedType) field
+					.getGenericType()).getActualTypeArguments()[0];
+			if (annotationNames.contains("javax.persistence.ElementCollection")
+					|| annotationNames
+							.contains("org.hibernate.annotations.CollectionOfElements")) {
+				return new FormElement(defaultValue, parameterizedType,
+						FormElementType.LIST);
+			}
 			if (annotations.contains(javax.persistence.OneToMany.class)) {
 				OneToMany ann = field.getAnnotation(OneToMany.class);
 				if (!StringUtils.isEmpty(ann.mappedBy())) {
 					return null;
 				}
-				return new FormElement(defaultValue, parameterizedType, FormElementType.RELATION).acceptMultiple();
+				return new FormElement(defaultValue, parameterizedType,
+						FormElementType.RELATION).acceptMultiple();
 			}
 			if (annotations.contains(javax.persistence.ManyToMany.class)) {
 				ManyToMany ann = field.getAnnotation(ManyToMany.class);
 				if (!StringUtils.isEmpty(ann.mappedBy())) {
 					return null;
 				}
-				return new FormElement(defaultValue, parameterizedType, FormElementType.RELATION).acceptMultiple();
+				return new FormElement(defaultValue, parameterizedType,
+						FormElementType.RELATION).acceptMultiple();
 			}
 		}
 		return defaultValue;

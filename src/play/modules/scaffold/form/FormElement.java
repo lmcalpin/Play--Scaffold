@@ -116,6 +116,10 @@ public class FormElement {
 		return formElementType == FormElementType.TEXT;
 	}
 
+	public boolean isList() {
+		return formElementType == FormElementType.LIST;
+	}
+
 	public boolean isHidden() {
 		return formElementType == FormElementType.HIDDEN;
 	}

@@ -36,7 +36,7 @@ public class DefaultViewScaffoldingStrategy implements ViewScaffoldingStrategy {
 		FormElementType type;
 		List<String> options = null;
 		Class<?> classType = field.getType();
-		List<String> annotations = Fields.annotationNames(field);
+		List<String> annotationNames = Fields.annotationNames(field);
 		if (classType.equals(Boolean.class) || classType.equals(boolean.class)) {
 			type = FormElementType.CHECKBOX;
 		} else if (classType.equals(Date.class)) {
@@ -45,7 +45,7 @@ public class DefaultViewScaffoldingStrategy implements ViewScaffoldingStrategy {
 			type = FormElementType.SELECT;
 			Class<Enum> enumClass = (Class<Enum>) classType;
 			options = Enums.list(Enums.values(enumClass));
-		} else if (annotations.contains("play.data.validation.Password")) {
+		} else if (annotationNames.contains("play.data.validation.Password")) {
 			type = FormElementType.PASSWORD;
 		} else {
 			type = FormElementType.TEXT;
@@ -60,7 +60,7 @@ public class DefaultViewScaffoldingStrategy implements ViewScaffoldingStrategy {
 			type = formOverride.type();
 		}
 		FormElement element = new FormElement(field, type, options);
-		if (annotations.contains("play.data.validation.Required")) {
+		if (annotationNames.contains("play.data.validation.Required")) {
 			element.setRequired(true);
 		}
 		return element;
