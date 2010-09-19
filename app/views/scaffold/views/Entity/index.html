@@ -3,14 +3,17 @@ ${"#{"}extends 'main.html' /}
 <h2>${entity.controllerName}</h2>
 
 <table class="entity ${entity.name}">
-	<tr>
-		<td><!-- actions --></td>
+	<thead>
+		<tr>
+			<th><!-- actions --></th>
 			#{list items:entity.formElements, as:'elem'}
-        #{ifnot elem.isPassword()}
-					<td>${elem.name}</td>
-        #{/ifnot}
+	        #{ifnot elem.isPassword()}
+				<th>${elem.name}</th>
+	        #{/ifnot}
 			#{/list}
-	</tr>
+		</tr>
+	</thead>
+	<tbody>
 	${"#{"}list items:entities, as:'entity'}
 		<tr>
 			<td>
@@ -25,6 +28,7 @@ ${"#{"}extends 'main.html' /}
 			#{/list}
 		</tr>
 	${"#{/"}list}
+	</tbody>
 </table>
 
 <a href="${"@{"}${entity.controllerName}.create}">Create</a>
