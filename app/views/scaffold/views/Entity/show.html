@@ -10,7 +10,7 @@ ${"#{"}extends 'main.html' /}
 			${elem.name}:
 		</span>
 		<span class="value">
-      #{generateExpression entity:elem.name, expr:'entity.$1' /}
+      #{scaffold.expression entity:elem.name, expr:'entity.$1' /}
 		</span>
 	</div>
   #{/ifnot}

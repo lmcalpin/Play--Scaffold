@@ -3,7 +3,7 @@
   <div class="field">
     #{if _element.isCheckbox() }
       <input type="checkbox" name="entity.${_element.path}"
-        #{generateExpression entity:_element.path('?.'), expr:'entity?.$1 ? \'checked\':\'\'' /}
+        #{scaffold.expression entity:_element.path('?.'), expr:'entity?.$1 ? \'checked\':\'\'' /}
       />
     #{/if}
     #{elseif _element.isDate()}
@@ -14,14 +14,14 @@
       </script>
       <!-- TODO: date format needs to come from application.conf -->
       <input id="${_element.path}" type="text" name="entity.${_element.path}" 
-        value="#{generateExpression entity:_element.path('?.'), expr:'entity?.$1?.format(\'yyyy-MM-dd\')' /}"
+        value="#{scaffold.expression entity:_element.path('?.'), expr:'entity?.$1?.format(\'yyyy-MM-dd\')' /}"
         size="10" />
     #{/elseif}
     #{elseif _element.isSelect()}
       <select name="entity.${_element.path}">
         #{list _element.options, as: 'option'}
           <option value="${option}" 
-            #{generateExpression entity:[_element.path('?.'),option], expr:'(entity?.$1?.name() == \'$2\') ? \'selected\':\'\'' /}>${option}</option>
+            #{scaffold.expression entity:[_element.path('?.'),option], expr:'(entity?.$1?.name() == \'$2\') ? \'selected\':\'\'' /}>${option}</option>
         #{/list}
       </select>
     #{/elseif}
@@ -37,7 +37,7 @@
                 selected = true;
             }
           }%
-          <option value="#{generateExpression entity:idField, expr:'it?.$1'/}" #{generateExpression expr:'selected ? \'selected\'.raw() : \'\''/}>#{generateExpression entity:'it', expr:'$1'/}</option>
+          <option value="#{scaffold.expression entity:idField, expr:'it?.$1'/}" #{scaffold.expression expr:'selected ? \'selected\'.raw() : \'\''/}>#{scaffold.expression entity:'it', expr:'$1'/}</option>
         ${"%{"} } }%
         </select>
       #{/if}
@@ -54,7 +54,7 @@
               selected = true
             }
           }%
-          <option value="#{generateExpression entity:idField, expr:'it?.$1'/}" #{generateExpression expr:'selected ? \'selected\'.raw() : \'\''/}>#{generateExpression entity:'it', expr:'$1'/}</option>
+          <option value="#{scaffold.expression entity:idField, expr:'it?.$1'/}" #{scaffold.expression expr:'selected ? \'selected\'.raw() : \'\''/}>#{scaffold.expression entity:'it', expr:'$1'/}</option>
         ${"%{"} } }%
         </select>
       #{/else}
@@ -62,28 +62,28 @@
     #{elseif _element.isList()}
     	#{if Enum.class.isAssignableFrom(_element.getFieldType())}
 			${"#{"}list items:${_element.getFieldType().getName()}.values(), as:'en'} <input
-				type="checkbox" name="entity.${_element.path}" value="#{generateExpression entity:'en', expr:'$1'/}" ${"#{"}if entity?.${_element.path}?.contains(en)} checked ${"#{"}/if}>#{generateExpression entity:'en', expr:'$1'/}</input>
+				type="checkbox" name="entity.${_element.path}" value="#{scaffold.expression entity:'en', expr:'$1'/}" ${"#{"}if entity?.${_element.path}?.contains(en)} checked ${"#{"}/if}>#{scaffold.expression entity:'en', expr:'$1'/}</input>
 				<br />
 			${"#{"}/list}    	
     	#{/if}
     #{/elseif}
     #{elseif _element.isTextArea()}
-      <textarea name="entity.${_element.path}" rows="10" cols="40">#{generateExpression entity:_element.path('?.'), expr:'entity?.$1' /}</textarea>
+      <textarea name="entity.${_element.path}" rows="10" cols="40">#{scaffold.expression entity:_element.path('?.'), expr:'entity?.$1' /}</textarea>
     #{/elseif}
     #{elseif _element.isPassword()}
-      <input type="password" name="entity.${_element.path}" value="#{generateExpression entity:_element.path('?.'), expr:'entity?.$1' /}"/>
+      <input type="password" name="entity.${_element.path}" value="#{scaffold.expression entity:_element.path('?.'), expr:'entity?.$1' /}"/>
     #{/elseif}
     #{elseif _element.isHidden()}
-      <input type="hidden" name="entity.${_element.path}" value="#{generateExpression entity:_element.path('?.'), expr:'entity?.$1' /}"/>
+      <input type="hidden" name="entity.${_element.path}" value="#{scaffold.expression entity:_element.path('?.'), expr:'entity?.$1' /}"/>
     #{/elseif}
     #{elseif _element.isEmbedded()}
         #{list items:_element.fieldAsEntity.formElements, as:'elem'}
-         #{scaffoldFormElement element:elem /}
+         #{scaffold.element element:elem /}
         #{/list}        
     #{/elseif}
     #{else}
-      <input type="text" name="entity.${_element.path}" value="#{generateExpression entity:_element.path('?.'), expr:'entity?.$1' /}"/>
+      <input type="text" name="entity.${_element.path}" value="#{scaffold.expression entity:_element.path('?.'), expr:'entity?.$1' /}"/>
     #{/else}
   </div>
-  <span class="error">#{generateExpression entity:_element.path, expr:'errors.forKey(\'entity.$1\')' /}</span>
+  <span class="error">#{scaffold.expression entity:_element.path, expr:'errors.forKey(\'entity.$1\')' /}</span>
 </div>

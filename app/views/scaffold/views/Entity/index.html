@@ -23,7 +23,7 @@ ${"#{"}extends 'main.html' /}
 			</td>
 			#{list items:entity.formElements, as:'elem'}
         #{ifnot elem.isPassword()}
-					<td>#{generateExpression entity:elem.name, expr:'entity.$1' /}</td>
+					<td>#{scaffold.expression entity:elem.name, expr:'entity.$1' /}</td>
         #{/ifnot}
 			#{/list}
 		</tr>
