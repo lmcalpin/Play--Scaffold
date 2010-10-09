@@ -8,7 +8,7 @@ ${"#{"}extends 'main.html' /}
 			<th><!-- actions --></th>
 			#{list items:entity.formElements, as:'elem'}
 	        #{ifnot elem.isPassword()}
-				<th>${elem.name}</th>
+				<th>${elem.label}</th>
 	        #{/ifnot}
 			#{/list}
 		</tr>
