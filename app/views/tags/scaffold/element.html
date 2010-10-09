@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="label">#{ifnot _element.isHidden()}${_element.name}#{/ifnot}</div>
+  <div class="label">#{ifnot _element.isHidden()}${_element.label}#{/ifnot}</div>
   <div class="field">
     #{if _element.isCheckbox() }
       <input type="checkbox" name="entity.${_element.path}"

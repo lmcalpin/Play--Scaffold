@@ -22,8 +22,10 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 import play.modules.scaffold.entity.Entity;
+import play.modules.scaffold.utils.Strings;
 
 public class FormElement {
+	private String label;
 	private String name;
 	private Class<?> fieldType;
 	private FormElementType formElementType;
@@ -51,6 +53,7 @@ public class FormElement {
 
 	public FormElement(String fieldName, Class<?> fieldType, FormElementType formElementType, List<String> options) {
 		this.name = fieldName;
+		this.label = Strings.wordify(fieldName);
 		this.fieldType = fieldType;
 		this.options = options;
 		this.formElementType = formElementType;
@@ -63,6 +66,10 @@ public class FormElement {
 		}
 	}
 
+	public String getLabel() {
+		return label;
+	}
+	
 	public String getName() {
 		return name;
 	}

@@ -26,6 +26,7 @@ public class FormElementTest {
 	
 	@Test
 	public void testPathUsesDotNotationForChildrenOfEmbeddables() {
-		Assert.assertEquals("parent?.test", fe.getPath());
+		Assert.assertEquals("parent.test", fe.getPath());
+		Assert.assertEquals("parent?.test", fe.path("?."));
 	}
 }

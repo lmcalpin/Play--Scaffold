@@ -8,6 +8,36 @@ public class Strings {
 		return String.valueOf(s.charAt(0)).toUpperCase() + s.substring(1);
 	}
 
+	public static final String wordify(String s) {
+		StringBuilder sb = new StringBuilder();
+		boolean isFirstCharacter = true;
+		boolean inUpperCase = false;
+		for (char c : s.toCharArray()) {
+			if (Character.isLetter(c)) {
+				if (isFirstCharacter) {
+					sb.append(Character.toUpperCase(c));
+					isFirstCharacter = false;
+				} else if (inUpperCase) {
+					if (Character.isUpperCase(c)) {
+						sb.append(Character.toUpperCase(c));
+					} else {
+						inUpperCase = false;
+						sb.append(c);
+					}
+				} else {
+					if (Character.isUpperCase(c)) {
+						inUpperCase = true;
+						sb.append(' ');
+					}
+					sb.append(c);
+				}
+			} else {
+				sb.append(c);
+			}
+		}
+		return sb.toString();
+	}
+
 	public static final String pluralize(String name) {
 		if (name == null || name.isEmpty())
 			return name;

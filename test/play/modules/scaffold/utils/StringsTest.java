@@ -36,4 +36,10 @@ public class StringsTest {
 		assertEquals("Axes", Strings.pluralize("Axis"));
 	}
 
+	@Test
+	public void testWordify() {
+		assertEquals("Lower Camel Case", Strings.wordify("lowerCamelCase"));
+		assertEquals("Some WSDL", Strings.wordify("someWSDL"));
+	}
+
 }

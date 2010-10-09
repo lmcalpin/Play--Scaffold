@@ -19,18 +19,16 @@
 package play.modules.scaffold.generator;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import play.Logger;
 import play.Play;
+import play.exceptions.UnexpectedException;
 import play.libs.IO;
 import play.modules.scaffold.entity.Entity;
 import play.templates.Template;
@@ -112,7 +110,7 @@ public class ScaffoldingGenerator {
 					templateFile);
 			String output = template.render(args);
 			IO.writeContent(output, targetFile);
-		} catch (IOException e) {
+		} catch (UnexpectedException e) {
 			Logger.warn(
 					e,
 					"! Failed to generate output successfully: "
@@ -282,8 +280,10 @@ public class ScaffoldingGenerator {
 			try {
 				File fileToCreate = Play.getFile(targetPath);
 				IO.writeContent(templateLayout, fileToCreate);
-			} catch (IOException e) {
+			} catch (UnexpectedException e) {
 				Logger.error(e, "IO Exception");
+			} catch (Throwable t) {
+				Logger.error(t, "Unhandled Exception");
 			}
 		} else {
 			Logger.info("! Skipping " + targetPath);
