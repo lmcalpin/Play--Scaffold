@@ -49,21 +49,17 @@ public class Generate {
 
 	private static final String INVALID_MODELPATTERN = "Invalid pattern, provide a text string with optional '*' wildcard";
 
-	public static void main(String[] args) throws Exception {
-		// initialize Play!
-		File root = new File(System.getProperty("application.path"));
-		Play.init(root, System.getProperty("play.id", ""));
-		Thread.currentThread().setContextClassLoader(Play.classloader);
-		MessagesPlugin plugin = new MessagesPlugin();
-		plugin.onApplicationStart();
-		
-		// default options
-		boolean forceOverwrite = false;
-		String includeRegEx = null;
-		String excludeRegEx = null;
-		boolean includeLayout = false;
-		boolean includeLogin = false;
+	boolean forceOverwrite = false;
+	String includeRegEx = null;
+	String excludeRegEx = null;
+	boolean includeLayout = false;
+	boolean includeLogin = false;
 
+	public Generate() {
+
+	}
+
+	public void parseArguments(String[] args) {
 		// interpret command line arguments
 		String gettingArgumentsForCommand = null;
 		for (String arg : args) {
@@ -86,11 +82,11 @@ public class Generate {
 				} else if (lowerArg.equalsIgnoreCase(EXCLUDE)) {
 					gettingArgumentsForCommand = EXCLUDE;
 				} else if (lowerArg.startsWith(INCLUDE + "=")) {
-					gettingArgumentsForCommand = INCLUDE;
-					includeRegEx = validateFilePatternArgs(INCLUDE, arg.split("=")[1]);
+					includeRegEx = validateFilePatternArgs(INCLUDE,
+							arg.split("=")[1]);
 				} else if (lowerArg.startsWith(EXCLUDE + "=")) {
-					gettingArgumentsForCommand = EXCLUDE;
-					excludeRegEx = validateFilePatternArgs(EXCLUDE, arg.split("=")[1]);
+					excludeRegEx = validateFilePatternArgs(EXCLUDE,
+							arg.split("=")[1]);
 				} else if (lowerArg.equalsIgnoreCase(WITH_LAYOUT)) {
 					includeLayout = true;
 				} else if (lowerArg.equalsIgnoreCase(WITH_LOGIN)) {
@@ -105,8 +101,10 @@ public class Generate {
 				}
 			}
 		}
+	}
 
-		// validate flags 
+	public void validate() {
+		// validate flags
 		if (includeLogin) {
 			try {
 				Class.forName("controllers.Secure", false, Play.classloader);
@@ -116,7 +114,9 @@ public class Generate {
 				includeLogin = false;
 			}
 		}
+	}
 
+	public void generateScaffolding() {
 		// Locate domain model classes that we can process.
 		// Currently, we only support classes that extend the
 		// play.db.jpa.Model or siena.Model classes.
@@ -129,7 +129,8 @@ public class Generate {
 			// If this model is of a supported type, queue it up
 			// so the ScaffoldGenerator will create its controller
 			// and views.
-			PersistenceStrategy persistenceStrategy = PersistenceStrategy.forModel(clazz);
+			PersistenceStrategy persistenceStrategy = PersistenceStrategy
+					.forModel(clazz);
 			if (persistenceStrategy != null) {
 				String simpleName = clazz.getSimpleName();
 				boolean includeEntity = false;
@@ -149,20 +150,25 @@ public class Generate {
 				}
 				if (includeEntity) {
 					Entity entity = new Entity(clazz);
-					
+
 					// validate known limitations
 					if (persistenceStrategy == PersistenceStrategy.PURE_JPA) {
 						String idField = entity.getIdField();
 						if (idField == null) {
-							Logger.warn("Can not process %s because it needs an @Id annotated column", simpleName);
+							Logger.warn(
+									"Can not process %s because it needs an @Id annotated column",
+									simpleName);
 							continue;
 						}
-						if (!Fields.annotations(clazz, idField).contains(GeneratedValue.class)) {
-							Logger.warn("Can not process %s because key must be auto-generated (use @GeneratedValue)", simpleName);
+						if (!Fields.annotations(clazz, idField).contains(
+								GeneratedValue.class)) {
+							Logger.warn(
+									"Can not process %s because key must be auto-generated (use @GeneratedValue)",
+									simpleName);
 							continue;
 						}
 					}
-					
+
 					// we appear to be good to go!
 					generator.addEntity(entity);
 				} else {
@@ -173,13 +179,31 @@ public class Generate {
 		generator.generate();
 	}
 
+	public void run(String[] args) {
+		parseArguments(args);
+		validate();
+		generateScaffolding();
+	}
+
+	public static void main(String[] args) throws Exception {
+		// initialize Play!
+		File root = new File(System.getProperty("application.path"));
+		Play.init(root, System.getProperty("play.id", ""));
+		Thread.currentThread().setContextClassLoader(Play.classloader);
+		MessagesPlugin plugin = new MessagesPlugin();
+		plugin.onApplicationStart();
+
+		Generate generator = new Generate();
+		generator.run(args);
+	}
+
 	private static String validateFilePatternArgs(String cmd, String arg) {
 		if (arg.isEmpty()) {
 			Logger.warn(cmd + ": " + INVALID_MODELPATTERN);
 			System.exit(-1);
 		}
 		String regex = arg;
-		Logger.info(cmd + ": files that match: %s",	regex);
+		Logger.info(cmd + ": files that match: %s", regex);
 		return regex;
 	}
 
@@ -195,14 +219,20 @@ public class Generate {
 			if (idx == -1) {
 				return false;
 			}
-			// if we don't start with a wildcard, the first matched section must be at index 0
-			if (section == 0 && (!(normalizedPattern.startsWith("*") || normalizedPattern.startsWith("~")))) {
+			// if we don't start with a wildcard, the first matched section must
+			// be at index 0
+			if (section == 0
+					&& (!(normalizedPattern.startsWith("*") || normalizedPattern
+							.startsWith("~")))) {
 				if (idx != 0) {
 					return false;
 				}
 			}
-			// if we don't end with a wildcard, the first matched section must be at index 0
-			if (section == subsections.length-1 && (!(normalizedPattern.endsWith("*") || normalizedPattern.endsWith("~")))) {
+			// if we don't end with a wildcard, the first matched section must
+			// be at index 0
+			if (section == subsections.length - 1
+					&& (!(normalizedPattern.endsWith("*") || normalizedPattern
+							.endsWith("~")))) {
 				if (!normalizedText.endsWith(subsection)) {
 					return false;
 				}

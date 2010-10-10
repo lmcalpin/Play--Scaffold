@@ -35,4 +35,36 @@ public class GenerateTest {
 		assertTrue(Generate.match("StartsWith", "startswith"));
 		assertTrue(Generate.match("EndsWith", "enDsWitH"));
 	}
+	
+	@Test
+	public void testParseInclude() {
+		Generate g = new Generate();
+		g.parseArguments(new String[] {"--include=TEST"});
+		assertTrue(g.includeRegEx.equalsIgnoreCase("TEST"));
+		assertTrue(g.excludeRegEx == null);
+	}
+	
+	@Test
+	public void testParseExclude() {
+		Generate g = new Generate();
+		g.parseArguments(new String[] {"--exclude=OTHERTEST"});
+		assertTrue(g.includeRegEx == null);
+		assertTrue(g.excludeRegEx.equalsIgnoreCase("OTHERTEST"));
+	}
+	
+	@Test
+	public void testParseIncludeWithFilePatternAsSeparateArgument() {
+		Generate g = new Generate();
+		g.parseArguments(new String[] {"--include", "TEST"});
+		assertTrue(g.includeRegEx.equalsIgnoreCase("TEST"));
+		assertTrue(g.excludeRegEx == null);
+	}
+	
+	@Test
+	public void testParseExcludeWithFilePatternAsSeparateArgument() {
+		Generate g = new Generate();
+		g.parseArguments(new String[] {"--exclude", "OTHERTEST"});
+		assertTrue(g.includeRegEx == null);
+		assertTrue(g.excludeRegEx.equalsIgnoreCase("OTHERTEST"));
+	}
 }
