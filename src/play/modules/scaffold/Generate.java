@@ -69,23 +69,9 @@ public class Generate {
 		for (String arg : args) {
 			if (gettingArgumentsForCommand != null) {
 				if (gettingArgumentsForCommand.equalsIgnoreCase(INCLUDE)) {
-					gettingArgumentsForCommand = INCLUDE;
-					if (arg.isEmpty()) {
-						Logger.warn(INCLUDE + ": " + INVALID_MODELPATTERN);
-						System.exit(-1);
-					}
-					includeRegEx = arg;
-					Logger.info("--include: Including files that match: %s",
-							includeRegEx);
+					includeRegEx = validateFilePatternArgs(INCLUDE, arg);
 				} else if (gettingArgumentsForCommand.equalsIgnoreCase(EXCLUDE)) {
-					gettingArgumentsForCommand = EXCLUDE;
-					if (arg.isEmpty()) {
-						Logger.warn(EXCLUDE + ": " + INVALID_MODELPATTERN);
-						System.exit(-1);
-					}
-					excludeRegEx = arg;
-					Logger.info("--exclude: Skipping files that match: %s",
-							excludeRegEx);
+					excludeRegEx = validateFilePatternArgs(EXCLUDE, arg);
 				}
 				gettingArgumentsForCommand = null;
 				continue;
@@ -99,6 +85,12 @@ public class Generate {
 					gettingArgumentsForCommand = INCLUDE;
 				} else if (lowerArg.equalsIgnoreCase(EXCLUDE)) {
 					gettingArgumentsForCommand = EXCLUDE;
+				} else if (lowerArg.startsWith(INCLUDE + "=")) {
+					gettingArgumentsForCommand = INCLUDE;
+					includeRegEx = validateFilePatternArgs(INCLUDE, arg.split("=")[1]);
+				} else if (lowerArg.startsWith(EXCLUDE + "=")) {
+					gettingArgumentsForCommand = EXCLUDE;
+					excludeRegEx = validateFilePatternArgs(EXCLUDE, arg.split("=")[1]);
 				} else if (lowerArg.equalsIgnoreCase(WITH_LAYOUT)) {
 					includeLayout = true;
 				} else if (lowerArg.equalsIgnoreCase(WITH_LOGIN)) {
@@ -179,6 +171,16 @@ public class Generate {
 			}
 		}
 		generator.generate();
+	}
+
+	private static String validateFilePatternArgs(String cmd, String arg) {
+		if (arg.isEmpty()) {
+			Logger.warn(cmd + ": " + INVALID_MODELPATTERN);
+			System.exit(-1);
+		}
+		String regex = arg;
+		Logger.info(cmd + ": files that match: %s",	regex);
+		return regex;
 	}
 
 	// Does simple matching: you can add an asterisk to match "any"

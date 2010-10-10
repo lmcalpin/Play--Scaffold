@@ -18,15 +18,17 @@ def execute(**kargs):
     command = kargs.get("command")
     app = kargs.get("app")
     args = kargs.get("args")
+    for arg in args:
+		print arg
     env = kargs.get("env")
 
-    print "executing command: " + command
+    print "executing command: " + command 
     if command == 'scaffold:gen':
         run(app, args)
 
 def run(app, args):
     app.check()
-    java_cmd = app.java_cmd(['-Xmx64m'], className='play.modules.scaffold.Generate', args=[args])
+    java_cmd = app.java_cmd(['-Xmx64m'], className='play.modules.scaffold.Generate', args=args)
     subprocess.call(java_cmd, env=os.environ)
     print
 

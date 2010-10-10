@@ -6,3 +6,4 @@ eclipse
 .tmp_*.html.*~
 .svn
 module.bat
+*.pyc
