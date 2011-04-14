@@ -1,4 +1,4 @@
-${"#{"}extends 'main.html' /}
+${play.modules.scaffold.utils.Tags.openTemplateTag}extends 'main.html' /}
 
 <h2>View ${entity.name}</h2>
 
@@ -17,4 +17,4 @@ ${"#{"}extends 'main.html' /}
 #{/list}
 </div>
 
-<a href="${"@{"}${entity.controllerName}.index}">Back</a>
+<a href="${play.modules.scaffold.utils.Tags.openActionTag}${entity.controllerName}.index}">Back</a>

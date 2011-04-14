@@ -46,4 +46,24 @@ public class Tags {
 		sb.append("}");
 		return sb.toString();
 	}
+	
+	public static String generateScript(String expr) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("%{");
+            sb.append(expr);
+            sb.append("%}");
+            return sb.toString();
+	}
+
+        public static String getOpenScriptTag() {
+            return "%{";
+        }
+        
+        public static String getOpenTemplateTag() {
+            return "#{";
+        }
+        
+        public static String getOpenActionTag() {
+            return "@{";
+        }
 }

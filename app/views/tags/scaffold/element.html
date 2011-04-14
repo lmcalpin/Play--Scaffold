@@ -28,9 +28,9 @@
     #{elseif _element.isRelation()}
       #{if _element.isMultiple()}
         <select name="entity.${_element.path}.id" multiple>
-        ${"%{"} ${play.modules.scaffold.generator.DatabaseAccessScaffolding.allFor(_element.fieldType)}.sort{ it.toString() }.each() { }%
+        ${play.modules.scaffold.utils.Tags.openScriptTag} ${play.modules.scaffold.generator.DatabaseAccessScaffolding.allFor(_element.fieldType)}.sort{ it.toString() }.each() { }%
           %{ String idField = play.modules.scaffold.entity.Entity.from(_element.fieldType).idField %}
-          ${"%{"}
+          ${play.modules.scaffold.utils.Tags.openScriptTag} 
             selected = false;
             entity?.${_element.path}.each() { f ->
               if (f.id == it?.id)
@@ -38,7 +38,7 @@
             }
           }%
           <option value="#{scaffold.expression entity:idField, expr:'it?.$1'/}" #{scaffold.expression expr:'selected ? \'selected\'.raw() : \'\''/}>#{scaffold.expression entity:'it', expr:'$1'/}</option>
-        ${"%{"} } }%
+        ${play.modules.scaffold.utils.Tags.openScriptTag} } }%
         </select>
       #{/if}
       #{else}
@@ -46,25 +46,25 @@
               #{ifnot _element.isRequired()}
                       <option value="">&{'scaffold.none'}</option>              
               #{/ifnot}
-        ${"%{"} ${play.modules.scaffold.generator.DatabaseAccessScaffolding.allFor(_element.fieldType)}.sort{ it.toString() }.each() { }%
+        ${play.modules.scaffold.utils.Tags.openScriptTag} ${play.modules.scaffold.generator.DatabaseAccessScaffolding.allFor(_element.fieldType)}.sort{ it.toString() }.each() { }%
           %{ String idField = play.modules.scaffold.entity.Entity.from(_element.fieldType).idField %}
-          ${"%{"}
+          ${play.modules.scaffold.utils.Tags.openScriptTag}
             selected = false;
             if (entity?.${_element.path}?.${idField} == it.id) {
               selected = true
             }
           }%
           <option value="#{scaffold.expression entity:idField, expr:'it?.$1'/}" #{scaffold.expression expr:'selected ? \'selected\'.raw() : \'\''/}>#{scaffold.expression entity:'it', expr:'$1'/}</option>
-        ${"%{"} } }%
+        ${play.modules.scaffold.utils.Tags.openScriptTag} } }%
         </select>
       #{/else}
     #{/elseif}
     #{elseif _element.isList()}
     	#{if Enum.class.isAssignableFrom(_element.getFieldType())}
-			${"#{"}list items:${_element.getFieldType().getName()}.values(), as:'en'} <input
-				type="checkbox" name="entity.${_element.path}" value="#{scaffold.expression entity:'en', expr:'$1'/}" ${"#{"}if entity?.${_element.path}?.contains(en)} checked ${"#{"}/if}>#{scaffold.expression entity:'en', expr:'$1'/}</input>
+			${play.modules.scaffold.utils.Tags.openTemplateTag}list items:${_element.getFieldType().getName()}.values(), as:'en'} <input
+				type="checkbox" name="entity.${_element.path}" value="#{scaffold.expression entity:'en', expr:'$1'/}" ${play.modules.scaffold.utils.Tags.openTemplateTag}if entity?.${_element.path}?.contains(en)} checked ${play.modules.scaffold.utils.Tags.openTemplateTag}/if}>#{scaffold.expression entity:'en', expr:'$1'/}</input>
 				<br />
-			${"#{"}/list}    	
+			${play.modules.scaffold.utils.Tags.openTemplateTag}/list}    	
     	#{/if}
     #{/elseif}
     #{elseif _element.isTextArea()}

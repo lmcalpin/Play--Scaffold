@@ -117,6 +117,7 @@ public class ScaffoldingGenerator {
 							+ e.getMessage());
 		} catch (Throwable t) {
 			Logger.fatal(t, "! Unexpected error processing template: " + templateFile.getName(), args);
+			System.out.println(templateFile.contentAsString());
 			System.exit(-1);
 		}
 	}

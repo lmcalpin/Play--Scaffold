@@ -3,5 +3,5 @@ ${tagOpen}extends 'main.html'/}
 <h2>Controllers</h2>
 
 #{list items:entities, as:'entity'}
-	<a href="${"@{"}${entity.controllerName}.index}">${entity.controllerName}</a><br/>
+	<a href="${play.modules.scaffold.utils.Tags.openActionTag}${entity.controllerName}.index}">${entity.controllerName}</a><br/>
 #{/list}

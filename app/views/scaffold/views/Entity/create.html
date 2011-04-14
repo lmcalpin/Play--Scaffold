@@ -1,12 +1,12 @@
-${"#{"}extends 'main.html' /}
+${play.modules.scaffold.utils.Tags.openTemplateTag}extends 'main.html' /}
 
 <h2>Create ${entity.name}</h2>
 
 <div class="entity">
-${"#{"}form @${entity.controllerName}.save(), id:'createForm'}
-	${"#{"}include '${entity.controllerName}/_form.html' /}
+${play.modules.scaffold.utils.Tags.openTemplateTag}form @${entity.controllerName}.save(), id:'createForm'}
+	${play.modules.scaffold.utils.Tags.openTemplateTag}include '${entity.controllerName}/_form.html' /}
 	<input type="submit" name="submit" value="Save" />
-${"#{/"}form}
+${play.modules.scaffold.utils.Tags.openTemplateTag}/form}
 </div>
 
-<a href="${"@{"}${entity.controllerName}.index}">Cancel</a>
+<a href="${play.modules.scaffold.utils.Tags.openActionTag}${entity.controllerName}.index}">Cancel</a>
