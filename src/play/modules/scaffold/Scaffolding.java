@@ -11,5 +11,5 @@ import java.lang.annotation.RetentionPolicy;
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Scaffolding {
-	public String controller();
+    public String controller();
 }

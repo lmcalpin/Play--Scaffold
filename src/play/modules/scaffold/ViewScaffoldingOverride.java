@@ -16,5 +16,5 @@ import play.modules.scaffold.form.FormElementType;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface ViewScaffoldingOverride {
-	public FormElementType type(); 
+    public FormElementType type();
 }

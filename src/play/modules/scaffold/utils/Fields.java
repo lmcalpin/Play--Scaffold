@@ -25,36 +25,36 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Fields {
-	public static List<String> annotationNames(Field field) {
-		List<String> output = new ArrayList<String>();
-		Annotation[] annotations = field.getAnnotations();
-		for (Annotation ann : annotations) {
-			output.add(ann.annotationType().getName());
-		}
-		return output;
-	}
-	
-	public static List<Class<? extends Annotation>> annotations(Field field ) {
-		List<Class<? extends Annotation>> output = new ArrayList<Class<? extends Annotation>>();
-		Annotation[] annotations = field.getAnnotations();
-		for (Annotation ann : annotations) {
-			output.add(ann.annotationType());
-		}
-		return output;
-	}
-	
-	public static List<Class<? extends Annotation>> annotations(Class<?> clazz, String fieldName) {
-		List<Field> fields = Classes.publicFields(clazz);
-		for (Field field : fields) {
-			if (field.getName().equalsIgnoreCase(fieldName)) {
-				return annotations(field);
-			}
-		}
-		return null;
-	}
-	
-	public static boolean isNumeric(Field field) {
-		Class<?> type = field.getType();
-		return Classes.isNumeric(type);
-	}
+    public static List<String> annotationNames(Field field) {
+        List<String> output = new ArrayList<String>();
+        Annotation[] annotations = field.getAnnotations();
+        for (Annotation ann : annotations) {
+            output.add(ann.annotationType().getName());
+        }
+        return output;
+    }
+
+    public static List<Class<? extends Annotation>> annotations(Field field) {
+        List<Class<? extends Annotation>> output = new ArrayList<Class<? extends Annotation>>();
+        Annotation[] annotations = field.getAnnotations();
+        for (Annotation ann : annotations) {
+            output.add(ann.annotationType());
+        }
+        return output;
+    }
+
+    public static List<Class<? extends Annotation>> annotations(Class<?> clazz, String fieldName) {
+        List<Field> fields = Classes.publicFields(clazz);
+        for (Field field : fields) {
+            if (field.getName().equalsIgnoreCase(fieldName)) {
+                return annotations(field);
+            }
+        }
+        return null;
+    }
+
+    public static boolean isNumeric(Field field) {
+        Class<?> type = field.getType();
+        return Classes.isNumeric(type);
+    }
 }

@@ -29,67 +29,67 @@ import play.modules.scaffold.utils.Classes;
 import play.modules.scaffold.utils.Fields;
 
 public enum PersistenceStrategy {
-	PLAY_JPA, PURE_JPA, SIENA;
+    PLAY_JPA, PURE_JPA, SIENA;
 
-	public ViewScaffoldingStrategy getViewScaffoldingStrategy() {
-		switch (this) {
-		case PLAY_JPA:
-			return new JpaViewScaffoldingStrategy();
-		case PURE_JPA:
-			return new JpaViewScaffoldingStrategy();
-		case SIENA:
-			return new SienaViewScaffoldingStrategy();
-		}
-		return null;
-	}
+    public ViewScaffoldingStrategy getViewScaffoldingStrategy() {
+        switch (this) {
+        case PLAY_JPA:
+            return new JpaViewScaffoldingStrategy();
+        case PURE_JPA:
+            return new JpaViewScaffoldingStrategy();
+        case SIENA:
+            return new SienaViewScaffoldingStrategy();
+        }
+        return null;
+    }
 
-	public boolean isId(Field field) {
-		List<String> annotations = Fields.annotationNames(field);
-		switch (this) {
-		case PLAY_JPA:
-			return (annotations.contains("javax.persistence.Id"));
-		case PURE_JPA:
-			return (annotations.contains("javax.persistence.Id"));
-		case SIENA:
-			return (annotations.contains("siena.Id"));
-		}
-		return false;
+    public boolean isId(Field field) {
+        List<String> annotations = Fields.annotationNames(field);
+        switch (this) {
+        case PLAY_JPA:
+            return (annotations.contains("javax.persistence.Id"));
+        case PURE_JPA:
+            return (annotations.contains("javax.persistence.Id"));
+        case SIENA:
+            return (annotations.contains("siena.Id"));
+        }
+        return false;
 
-	}
+    }
 
-	// Determine whether this is a play.db.jpa.Model model or an alternative
-	// model, such as a siena.Model. Since we can't be sure that alternative
-	// model support classes, such as siena.Model, are available on the
-	// classpath, we determine all superclasses for our model, and compile
-	// a List of class names that our model is descended from.
-	//
-	// Then, we simply see if the class name for our database support class is
-	// in that list.
-	public static PersistenceStrategy forModel(Class<?> clazz) {
-		List<String> superclasses = Classes.superclasses(clazz);
-		List<String> annotations = Classes.annotations(clazz);
-		if (superclasses.contains("play.db.jpa.Model")) {
-			return PersistenceStrategy.PLAY_JPA;
-		}
-		if (annotations.contains("javax.persistence.Entity")) {
-			return PersistenceStrategy.PURE_JPA;
-		}
-		if (superclasses.contains("siena.Model")) {
-			return PersistenceStrategy.SIENA;
-		}
-		return null;
-	}
+    // Determine whether this is a play.db.jpa.Model model or an alternative
+    // model, such as a siena.Model. Since we can't be sure that alternative
+    // model support classes, such as siena.Model, are available on the
+    // classpath, we determine all superclasses for our model, and compile
+    // a List of class names that our model is descended from.
+    //
+    // Then, we simply see if the class name for our database support class is
+    // in that list.
+    public static PersistenceStrategy forModel(Class<?> clazz) {
+        List<String> superclasses = Classes.superclasses(clazz);
+        List<String> annotations = Classes.annotations(clazz);
+        if (superclasses.contains("play.db.jpa.Model")) {
+            return PersistenceStrategy.PLAY_JPA;
+        }
+        if (annotations.contains("javax.persistence.Entity")) {
+            return PersistenceStrategy.PURE_JPA;
+        }
+        if (superclasses.contains("siena.Model")) {
+            return PersistenceStrategy.SIENA;
+        }
+        return null;
+    }
 
-	public static PersistenceStrategy forEmbeddable(Class<?> clazz) {
-		List<String> annotations = Classes.annotations(clazz);
-		if (annotations.contains("javax.persistence.Embeddable"))
-			return PersistenceStrategy.PURE_JPA;
-		return null;
-	}
+    public static PersistenceStrategy forEmbeddable(Class<?> clazz) {
+        List<String> annotations = Classes.annotations(clazz);
+        if (annotations.contains("javax.persistence.Embeddable"))
+            return PersistenceStrategy.PURE_JPA;
+        return null;
+    }
 
-	public boolean getUsesPlayModelSupport() {
-		if (this == PersistenceStrategy.PURE_JPA)
-			return false;
-		return true;
-	}
+    public boolean getUsesPlayModelSupport() {
+        if (this == PersistenceStrategy.PURE_JPA)
+            return false;
+        return true;
+    }
 }

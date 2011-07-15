@@ -26,70 +26,69 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Classes {
-	public static List<Field> publicFields(Class<?> clazz) {
-		final List<Field> output = new ArrayList<Field>();
-		foreachSuperclass(clazz, false, new Executable<Class<?>>() {
-			public void execute(Class<?> superclass) {
-				Field[] fields = superclass.getDeclaredFields();
-				for (Field field : fields) {
-					// include only public fields
-					if (Modifier.isPublic(field.getModifiers())) {
-						output.add(field);
-					}
-				}
-			}
-		});
-		return output;
-	}
+    public static List<Field> publicFields(Class<?> clazz) {
+        final List<Field> output = new ArrayList<Field>();
+        foreachSuperclass(clazz, false, new Executable<Class<?>>() {
+            public void execute(Class<?> superclass) {
+                Field[] fields = superclass.getDeclaredFields();
+                for (Field field : fields) {
+                    // include only public fields
+                    if (Modifier.isPublic(field.getModifiers())) {
+                        output.add(field);
+                    }
+                }
+            }
+        });
+        return output;
+    }
 
-	public static List<String> superclasses(Class<?> clazz) {
-		final List<String> output = new ArrayList<String>();
-		foreachSuperclass(clazz, true, new Executable<Class<?>>() {
-			public void execute(Class<?> superclass) {
-				output.add(superclass.getName());
-			}
-		});
-		return output;
-	}
+    public static List<String> superclasses(Class<?> clazz) {
+        final List<String> output = new ArrayList<String>();
+        foreachSuperclass(clazz, true, new Executable<Class<?>>() {
+            public void execute(Class<?> superclass) {
+                output.add(superclass.getName());
+            }
+        });
+        return output;
+    }
 
-	public static List<String> annotations(Class<?> clazz) {
-		List<String> output = new ArrayList<String>();
-		Annotation[] annotations = clazz.getAnnotations();
-		for (Annotation ann : annotations) {
-			output.add(ann.annotationType().getName());
-		}
-		return output;
-	}
+    public static List<String> annotations(Class<?> clazz) {
+        List<String> output = new ArrayList<String>();
+        Annotation[] annotations = clazz.getAnnotations();
+        for (Annotation ann : annotations) {
+            output.add(ann.annotationType().getName());
+        }
+        return output;
+    }
 
-	private static void foreachSuperclass(Class<?> clazz, boolean skipCurrent,
-			Executable<Class<?>> block) {
-		Class<?> superclass = clazz;
-		if (skipCurrent) {
-			superclass = superclass.getSuperclass();
-		}
-		if (superclass == null)
-			return;
-		do {
-			if (superclass != null) {
-				block.execute(superclass);
-			}
-			superclass = superclass.getSuperclass();
-		} while (superclass != null);
-	}
+    private static void foreachSuperclass(Class<?> clazz, boolean skipCurrent, Executable<Class<?>> block) {
+        Class<?> superclass = clazz;
+        if (skipCurrent) {
+            superclass = superclass.getSuperclass();
+        }
+        if (superclass == null)
+            return;
+        do {
+            if (superclass != null) {
+                block.execute(superclass);
+            }
+            superclass = superclass.getSuperclass();
+        } while (superclass != null);
+    }
 
-	public static String getPackageName(Class<?> clazz) {
-		String fullName = clazz.getName();
-		String packageName = "";
-		int subpackageIdx = fullName.lastIndexOf('.');
-		if (subpackageIdx >= 0) {
-			packageName = fullName.substring(0, subpackageIdx);
-		}
-		return packageName;
-	}
-	
-	public static boolean isNumeric(Class<?> type) {
-		if (Number.class.isAssignableFrom(type))
-			return true;
-		return false;
-	}
+    public static String getPackageName(Class<?> clazz) {
+        String fullName = clazz.getName();
+        String packageName = "";
+        int subpackageIdx = fullName.lastIndexOf('.');
+        if (subpackageIdx >= 0) {
+            packageName = fullName.substring(0, subpackageIdx);
+        }
+        return packageName;
+    }
+
+    public static boolean isNumeric(Class<?> type) {
+        if (Number.class.isAssignableFrom(type))
+            return true;
+        return false;
+    }
 }

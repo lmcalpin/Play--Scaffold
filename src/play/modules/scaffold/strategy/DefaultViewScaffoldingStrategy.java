@@ -31,39 +31,38 @@ import play.modules.scaffold.utils.Fields;
 
 public class DefaultViewScaffoldingStrategy implements ViewScaffoldingStrategy {
 
-	public FormElement render(Field field) {
-		String name = field.getName();
-		FormElementType type;
-		List<String> options = null;
-		Class<?> classType = field.getType();
-		List<String> annotationNames = Fields.annotationNames(field);
-		if (classType.equals(Boolean.class) || classType.equals(boolean.class)) {
-			type = FormElementType.CHECKBOX;
-		} else if (classType.equals(Date.class)) {
-			type = FormElementType.DATE;
-		} else if (classType.isEnum()) {
-			type = FormElementType.SELECT;
-			Class<Enum> enumClass = (Class<Enum>) classType;
-			options = Enums.list(Enums.values(enumClass));
-		} else if (annotationNames.contains("play.data.validation.Password")) {
-			type = FormElementType.PASSWORD;
-		} else {
-			type = FormElementType.TEXT;
-		}
-		NoScaffolding formHint = field.getAnnotation(NoScaffolding.class);
-		if (formHint != null)
-			return null;
-		ViewScaffoldingOverride formOverride = field.getAnnotation(ViewScaffoldingOverride.class);
-		if (formOverride != null)
-		{
-			// user override for the FormElementType
-			type = formOverride.type();
-		}
-		FormElement element = new FormElement(field, type, options);
-		if (annotationNames.contains("play.data.validation.Required")) {
-			element.setRequired(true);
-		}
-		return element;
-	}
+    public FormElement render(Field field) {
+        String name = field.getName();
+        FormElementType type;
+        List<String> options = null;
+        Class<?> classType = field.getType();
+        List<String> annotationNames = Fields.annotationNames(field);
+        if (classType.equals(Boolean.class) || classType.equals(boolean.class)) {
+            type = FormElementType.CHECKBOX;
+        } else if (classType.equals(Date.class)) {
+            type = FormElementType.DATE;
+        } else if (classType.isEnum()) {
+            type = FormElementType.SELECT;
+            Class<Enum> enumClass = (Class<Enum>) classType;
+            options = Enums.list(Enums.values(enumClass));
+        } else if (annotationNames.contains("play.data.validation.Password")) {
+            type = FormElementType.PASSWORD;
+        } else {
+            type = FormElementType.TEXT;
+        }
+        NoScaffolding formHint = field.getAnnotation(NoScaffolding.class);
+        if (formHint != null)
+            return null;
+        ViewScaffoldingOverride formOverride = field.getAnnotation(ViewScaffoldingOverride.class);
+        if (formOverride != null) {
+            // user override for the FormElementType
+            type = formOverride.type();
+        }
+        FormElement element = new FormElement(field, type, options);
+        if (annotationNames.contains("play.data.validation.Required")) {
+            element.setRequired(true);
+        }
+        return element;
+    }
 
 }

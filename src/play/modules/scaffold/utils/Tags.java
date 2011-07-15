@@ -21,49 +21,49 @@ package play.modules.scaffold.utils;
 import java.util.List;
 
 public class Tags {
-	public static String generateExpression(String entity, String expr) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("${");
-		if (entity != null) {
-			expr = expr.replaceAll("\\$1", entity);
-		}
-		sb.append(expr);
-		sb.append("}");
-		return sb.toString();
-	}
+    public static String generateExpression(String entity, String expr) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("${");
+        if (entity != null) {
+            expr = expr.replaceAll("\\$1", entity);
+        }
+        sb.append(expr);
+        sb.append("}");
+        return sb.toString();
+    }
 
-	public static String generateExpression(List<String> entities, String expr) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("${");
-		int idx = 1;
-		if (entities != null) {
-			for (String entity : entities) {
-				String var = "\\$" + idx++;
-				expr = expr.replaceAll(var, entity);
-			}
-		}
-		sb.append(expr);
-		sb.append("}");
-		return sb.toString();
-	}
-	
-	public static String generateScript(String expr) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("%{");
-            sb.append(expr);
-            sb.append("%}");
-            return sb.toString();
-	}
+    public static String generateExpression(List<String> entities, String expr) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("${");
+        int idx = 1;
+        if (entities != null) {
+            for (String entity : entities) {
+                String var = "\\$" + idx++;
+                expr = expr.replaceAll(var, entity);
+            }
+        }
+        sb.append(expr);
+        sb.append("}");
+        return sb.toString();
+    }
 
-        public static String getOpenScriptTag() {
-            return "%{";
-        }
-        
-        public static String getOpenTemplateTag() {
-            return "#{";
-        }
-        
-        public static String getOpenActionTag() {
-            return "@{";
-        }
+    public static String generateScript(String expr) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("%{");
+        sb.append(expr);
+        sb.append("%}");
+        return sb.toString();
+    }
+
+    public static String getOpenScriptTag() {
+        return "%{";
+    }
+
+    public static String getOpenTemplateTag() {
+        return "#{";
+    }
+
+    public static String getOpenActionTag() {
+        return "@{";
+    }
 }

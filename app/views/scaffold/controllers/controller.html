@@ -13,54 +13,52 @@ ${additionalImport}
 import play.mvc.With;
 
 @With(Secure.class)
-#{/if}
-public class ${entity.controllerName} extends Controller {
-	public static void index() {
-		List<${entity.name}> entities = ${play.modules.scaffold.generator.DatabaseAccessScaffolding.allFor(entity).raw()};
-		render(entities);
-	}
+#{/if}public class ${entity.controllerName} extends Controller {
+    public static void index() {
+        List<${entity.name}> entities = ${play.modules.scaffold.generator.DatabaseAccessScaffolding.allFor(entity).raw()};
+        render(entities);
+    }
 
-	public static void create(${entity.name} entity) {
-		render(entity);
-	}
+    public static void create(${entity.name} entity) {
+        render(entity);
+    }
 
-	public static void show(${entity.idClass.name} id) {
-    ${entity.name} entity = ${play.modules.scaffold.generator.DatabaseAccessScaffolding.findByIdFor(entity).raw()};
-		render(entity);
-	}
+    public static void show(${entity.idClass.name} id) {
+        ${entity.name} entity = ${play.modules.scaffold.generator.DatabaseAccessScaffolding.findByIdFor(entity).raw()};
+        render(entity);
+    }
 
-	public static void edit(${entity.idClass.name} id) {
-    ${entity.name} entity = ${play.modules.scaffold.generator.DatabaseAccessScaffolding.findByIdFor(entity).raw()};
-		render(entity);
-	}
+    public static void edit(${entity.idClass.name} id) {
+        ${entity.name} entity = ${play.modules.scaffold.generator.DatabaseAccessScaffolding.findByIdFor(entity).raw()};
+        render(entity);
+    }
 
-	public static void delete(${entity.idClass.name} id) {
-    ${entity.name} entity = ${play.modules.scaffold.generator.DatabaseAccessScaffolding.findByIdFor(entity).raw()};
-    ${play.modules.scaffold.generator.DatabaseAccessScaffolding.deleteFor(entity)};
-		index();
-	}
-	
-	public static void save(@Valid ${entity.name} entity) {
-		if (validation.hasErrors()) {
-			flash.error(Messages.get("scaffold.validation"));
-			render("@create", entity);
-		}
-    ${play.modules.scaffold.generator.DatabaseAccessScaffolding.saveFor(entity)};
-		flash.success(Messages.get("scaffold.created", "${entity.name}"));
-		index();
-	}
+    public static void delete(${entity.idClass.name} id) {
+        ${entity.name} entity = ${play.modules.scaffold.generator.DatabaseAccessScaffolding.findByIdFor(entity).raw()};
+        ${play.modules.scaffold.generator.DatabaseAccessScaffolding.deleteFor(entity)};
+        index();
+    }
+    
+    public static void save(@Valid ${entity.name} entity) {
+        if (validation.hasErrors()) {
+            flash.error(Messages.get("scaffold.validation"));
+            render("@create", entity);
+        }
+        ${play.modules.scaffold.generator.DatabaseAccessScaffolding.saveFor(entity)};
+        flash.success(Messages.get("scaffold.created", "${entity.name}"));
+        index();
+    }
 
-	public static void update(@Valid ${entity.name} entity) {
-		if (validation.hasErrors()) {
-			flash.error(Messages.get("scaffold.validation"));
-			render("@edit", entity);
-		}
-		#{if play.modules.scaffold.generator.DatabaseAccessScaffolding.requiresReattachFor(entity)}
-      		entity = ${play.modules.scaffold.generator.DatabaseAccessScaffolding.reattachFor(entity)};
-		#{/if}
-		${play.modules.scaffold.generator.DatabaseAccessScaffolding.updateFor(entity)};
-		flash.success(Messages.get("scaffold.updated", "${entity.name}"));
-		index();
-	}
-
+    public static void update(@Valid ${entity.name} entity) {
+        if (validation.hasErrors()) {
+            flash.error(Messages.get("scaffold.validation"));
+            render("@edit", entity);
+        }
+        #{if play.modules.scaffold.generator.DatabaseAccessScaffolding.requiresReattachFor(entity)}
+              entity = ${play.modules.scaffold.generator.DatabaseAccessScaffolding.reattachFor(entity)};
+        #{/if}
+        ${play.modules.scaffold.generator.DatabaseAccessScaffolding.updateFor(entity)};
+        flash.success(Messages.get("scaffold.updated", "${entity.name}"));
+        index();
+    }
 }
