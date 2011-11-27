@@ -17,9 +17,9 @@ ${play.modules.scaffold.utils.Tags.openTemplateTag}extends 'main.html' /}
 	${play.modules.scaffold.utils.Tags.openTemplateTag}list items:entities, as:'entity'}
 		<tr>
 			<td>
-				<a href="${play.modules.scaffold.utils.Tags.openActionTag}${entity.controllerName}.show(entity.${entity.idField})}">Show</a>&nbsp;
-				<a href="${play.modules.scaffold.utils.Tags.openActionTag}${entity.controllerName}.edit(entity.${entity.idField})}">Edit</a>&nbsp;
-				<a href="${play.modules.scaffold.utils.Tags.openActionTag}${entity.controllerName}.delete(entity.${entity.idField})}" onclick="if (!confirm('Are you sure you want to delete this record?')) return false;">Delete</a>
+				<a href="${play.modules.scaffold.utils.Tags.openActionTag}${entity.controllerName}.show(entity.${entity.idField})}">&{'scaffold.show'}</a>&nbsp;
+				<a href="${play.modules.scaffold.utils.Tags.openActionTag}${entity.controllerName}.edit(entity.${entity.idField})}">&{'scaffold.edit'}</a>&nbsp;
+				<a href="${play.modules.scaffold.utils.Tags.openActionTag}${entity.controllerName}.delete(entity.${entity.idField})}" onclick="if (!confirm('&{'scaffold.delete.confirm'}')) return false;">&{'scaffold.delete'}</a>
 			</td>
 			#{list items:entity.formElements, as:'elem'}
         #{ifnot elem.isPassword()}
@@ -31,4 +31,4 @@ ${play.modules.scaffold.utils.Tags.openTemplateTag}extends 'main.html' /}
 	</tbody>
 </table>
 
-<a href="${play.modules.scaffold.utils.Tags.openActionTag}${entity.controllerName}.create}">Create</a>
+<a href="${play.modules.scaffold.utils.Tags.openActionTag}${entity.controllerName}.create}">&{'scaffold.create'}</a>
