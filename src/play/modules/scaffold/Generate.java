@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2010, Lawrence McAlpin.
+ * Copyright 2012, Lawrence McAlpin.
  *
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,6 +43,10 @@ public class Generate {
     private static final String EXCLUDE = "--exclude";
     private static final String INCLUDE = "--include";
     private static final String OVERWRITE = "--overwrite";
+    // TODO: --flatten used to be default; we intend to change this so that future
+    // versions of scaffold use the subpackages the model is in when generating the controllers
+    // and views.  This work is currently unfinished...
+    private static final String FLATTEN_PATHS = "--flatten";
     private static final String WITH_LAYOUT = "--with-layout";
     private static final String WITH_LOGIN = "--with-login";
     private static final String ALL = "--all";
@@ -54,7 +58,8 @@ public class Generate {
     String excludeRegEx = null;
     boolean includeLayout = false;
     boolean includeLogin = false;
-
+    boolean flattenPaths = true;
+    
     public Generate() {
 
     }
@@ -85,6 +90,8 @@ public class Generate {
                     includeRegEx = validateFilePatternArgs(INCLUDE, arg.split("=")[1]);
                 } else if (lowerArg.startsWith(EXCLUDE + "=")) {
                     excludeRegEx = validateFilePatternArgs(EXCLUDE, arg.split("=")[1]);
+                } else if (lowerArg.equalsIgnoreCase(FLATTEN_PATHS)) {
+                    flattenPaths = true;
                 } else if (lowerArg.equalsIgnoreCase(WITH_LAYOUT)) {
                     includeLayout = true;
                 } else if (lowerArg.equalsIgnoreCase(WITH_LOGIN)) {
@@ -123,6 +130,7 @@ public class Generate {
         generator.setForceOverwrite(forceOverwrite);
         generator.setIncludeLayout(includeLayout);
         generator.setIncludeLogin(includeLogin);
+        generator.setFlattenPaths(flattenPaths);
         for (Class clazz : classes) {
             // If this model is of a supported type, queue it up
             // so the ScaffoldGenerator will create its controller

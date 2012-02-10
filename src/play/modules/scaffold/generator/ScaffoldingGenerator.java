@@ -60,6 +60,7 @@ public class ScaffoldingGenerator {
     private boolean forceOverwrite;
     private boolean includeLayout;
     private boolean includeLogin;
+    private boolean flattenPaths;
     private String applicationName;
 
     public ScaffoldingGenerator() {
@@ -156,9 +157,6 @@ public class ScaffoldingGenerator {
         templateArgs.put("applicationName", applicationName);
         templateArgs.put("includeLogin", includeLogin);
         templateArgs.put("entities", entities);
-        templateArgs.put("tagOpen", "#{");
-        templateArgs.put("exprOpen", "${");
-        templateArgs.put("actionOpen", "@{");
 
         // this represents the source file that we generate
         VirtualFile targetFile = Play.getVirtualFile(targetPath);
@@ -200,9 +198,17 @@ public class ScaffoldingGenerator {
 
     private void generateForEntity(Entity entity, TargetFileType type, String templateFolderPath,
             String templateFileName, String targetName) {
+        /*
+        if (!isFlattenPaths() && entity.getSubpackage() != null) {
+            String subpackage = entity.getSubpackage();
+            subpackage = subpackage.replaceAll("\\.", "/");
+            targetName = subpackage + "/" + targetName;
+        }
+        */
         String[] paths = getPaths(type, templateFolderPath, templateFileName, targetName);
         Map<String, Object> templateArgs = new HashMap<String, Object>();
         templateArgs.put("entity", entity);
+        //templateArgs.put("subpackage", isFlattenPaths() ? "" : entity.getSubpackage() != null ? "." + entity.getSubpackage() : "");
         invokeTemplate(type, paths[0], paths[1], templateArgs);
     }
 
@@ -227,7 +233,7 @@ public class ScaffoldingGenerator {
         if (targetFileName.contains("/")) {
             String[] fileSplit = targetFileName.split("/");
             if (fileSplit.length >= 2) {
-                ensureDirectoryExists(targetPath + '/' + fileSplit[0]);
+                ensureDirectoryExists(targetPath + '/' + Strings.join(Arrays.copyOfRange(fileSplit, 0, fileSplit.length-1), '/'));
             }
         }
         String targetFile = targetPath + targetFileName + type.getTargetSuffix();
@@ -327,6 +333,14 @@ public class ScaffoldingGenerator {
 
     public boolean isIncludeLogin() {
         return includeLogin;
+    }
+
+    public boolean isFlattenPaths() {
+        return flattenPaths;
+    }
+
+    public void setFlattenPaths(boolean flattenPaths) {
+        this.flattenPaths = flattenPaths;
     }
 
     public void setForceOverwrite(boolean forceOverwrite) {

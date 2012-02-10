@@ -1,7 +1,10 @@
 package play.modules.scaffold.generator;
 
+
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 
 import play.modules.scaffold.entity.Entity;
 import play.modules.scaffold.entity.PersistenceStrategy;
@@ -65,7 +68,7 @@ public class DatabaseAccessScaffolding {
     }
 
     public static String saveFor(Entity entity) {
-        return saveFor(entity, "entity");
+        return saveFor(entity, StringUtils.uncapitalize(entity.getName()));
     }
 
     public static String saveFor(Entity entity, String fieldName) {
@@ -85,7 +88,7 @@ public class DatabaseAccessScaffolding {
     }
 
     public static String updateFor(Entity entity) {
-        return updateFor(entity, "entity");
+        return updateFor(entity, StringUtils.uncapitalize(entity.getName()));
     }
 
     public static String updateFor(Entity entity, String fieldName) {
@@ -105,7 +108,7 @@ public class DatabaseAccessScaffolding {
     }
 
     public static String deleteFor(Entity entity) {
-        return deleteFor(entity, "entity");
+        return deleteFor(entity, StringUtils.uncapitalize(entity.getName()));
     }
 
     public static String deleteFor(Entity entity, String fieldName) {
@@ -143,7 +146,7 @@ public class DatabaseAccessScaffolding {
     }
 
     public static String reattachFor(Entity entity) {
-        return reattachFor(entity, "entity");
+        return reattachFor(entity, StringUtils.uncapitalize(entity.getName()));
     }
 
     public static String reattachFor(Entity entity, String fieldName) {

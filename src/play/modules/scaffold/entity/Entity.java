@@ -59,6 +59,7 @@ public class Entity {
         this.modelType = clazz;
         this.name = clazz.getSimpleName();
         this.packageName = Classes.getPackageName(clazz);
+        
         Scaffolding scaffolding = clazz.getAnnotation(Scaffolding.class);
         String controllerOverride = null;
         if (scaffolding != null) {
@@ -103,6 +104,7 @@ public class Entity {
     private void addFormElement(Field field) {
         FormElement formElement = scaffoldingStrategy.render(field);
         if (formElement != null) {
+            formElement.assignOwner(this);
             formElements.add(formElement);
         }
     }
@@ -150,7 +152,7 @@ public class Entity {
     public boolean getUsesPlayModelSupport() {
         return persistenceStrategy.getUsesPlayModelSupport();
     }
-
+    
     @Override
     public int hashCode() {
         final int prime = 31;

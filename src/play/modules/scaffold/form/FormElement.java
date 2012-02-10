@@ -25,6 +25,7 @@ import play.modules.scaffold.entity.Entity;
 import play.modules.scaffold.utils.Strings;
 
 public class FormElement {
+    private Entity owner;
     private String label;
     private String name;
     private Class<?> fieldType;
@@ -35,12 +36,16 @@ public class FormElement {
     private Entity fieldAsEntity;
     private FormElement parent;
 
-    public FormElement(Field field, FormElementType type) {
-        this(field, type, null);
+    public FormElement(Entity owner, Field field, FormElementType type) {
+        this(owner, field, type, null);
     }
 
+    public FormElement(Entity owner, Field field, FormElementType formElementType, List<String> options) {
+        this(owner, field.getName(), field.getType(), formElementType, options);
+    }
+    
     public FormElement(Field field, FormElementType formElementType, List<String> options) {
-        this(field.getName(), field.getType(), formElementType, options);
+        this(null, field.getName(), field.getType(), formElementType, options);
     }
 
     public FormElement(FormElement copy, FormElementType formElementType) {
@@ -48,10 +53,11 @@ public class FormElement {
     }
 
     public FormElement(FormElement copy, Class<?> fieldType, FormElementType formElementType) {
-        this(copy.name, fieldType, formElementType, copy.options);
+        this(copy.owner, copy.name, fieldType, formElementType, copy.options);
     }
 
-    public FormElement(String fieldName, Class<?> fieldType, FormElementType formElementType, List<String> options) {
+    public FormElement(Entity owner, String fieldName, Class<?> fieldType, FormElementType formElementType, List<String> options) {
+        this.owner = owner;
         this.name = fieldName;
         this.label = Strings.wordify(fieldName);
         this.fieldType = fieldType;
@@ -64,6 +70,10 @@ public class FormElement {
                 childFormElement.setParent(this);
             }
         }
+    }
+    
+    public void assignOwner(Entity entity) {
+        this.owner = entity;
     }
 
     public String getLabel() {
@@ -182,6 +192,12 @@ public class FormElement {
 
     public List<String> getOptions() {
         return options;
+    }
+    
+    public String getModelName() {
+        if (owner == null)
+            return null;
+        return owner.getName();
     }
 
     public String toString() {

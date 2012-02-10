@@ -1,47 +1,47 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>${tagOpen}get 'title' /}</title>
+        <title>${play.modules.scaffold.utils.Tags.openTemplateTag}get 'title' /}</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <link rel="stylesheet" type="text/css" media="screen" href="${actionOpen}'/public/stylesheets/default.css'}">
-        <link rel="stylesheet" type="text/css" media="screen" href="${actionOpen}'/public/stylesheets/main.css'}">
-        <link rel="stylesheet" type="text/css" media="screen" href="${actionOpen}'/public/stylesheets/jquery-ui-1.8.2.custom.css'}">
-        ${tagOpen}get 'moreStyles' /}
-        <link rel="shortcut icon" type="image/png" href="${actionOpen}'/public/images/favicon.png'}">
-        <script src="${actionOpen}'/public/javascripts/jquery-1.4.2.min.js'}" type="text/javascript" charset="utf-8"></script>
-        <script src="${actionOpen}'/public/javascripts/jquery-ui-1.8.2.custom.min.js'}" type="text/javascript" charset="utf-8"></script>
-        ${tagOpen}get 'moreScripts' /}
+        <link rel="stylesheet" type="text/css" media="screen" href="${play.modules.scaffold.utils.Tags.openActionTag}'/public/stylesheets/default.css'}">
+        <link rel="stylesheet" type="text/css" media="screen" href="${play.modules.scaffold.utils.Tags.openActionTag}'/public/stylesheets/main.css'}">
+        <link rel="stylesheet" type="text/css" media="screen" href="${play.modules.scaffold.utils.Tags.openActionTag}'/public/stylesheets/jquery-ui-1.8.2.custom.css'}">
+        ${play.modules.scaffold.utils.Tags.openTemplateTag}get 'moreStyles' /}
+        <link rel="shortcut icon" type="image/png" href="${play.modules.scaffold.utils.Tags.openActionTag}'/public/images/favicon.png'}">
+        <script src="${play.modules.scaffold.utils.Tags.openActionTag}'/public/javascripts/jquery-1.4.2.min.js'}" type="text/javascript" charset="utf-8"></script>
+        <script src="${play.modules.scaffold.utils.Tags.openActionTag}'/public/javascripts/jquery-ui-1.8.2.custom.min.js'}" type="text/javascript" charset="utf-8"></script>
+        ${play.modules.scaffold.utils.Tags.openTemplateTag}get 'moreScripts' /}
     </head>
     <body>
 		<div id="header"> 
-		     <a class="title" href="${actionOpen}Application.index}">~ ${applicationName} ~</a>
+		     <a class="title" href="${play.modules.scaffold.utils.Tags.openActionTag}Application.index}">~ ${applicationName} ~</a>
 		</div>
 		<div id="content-container">
       <div id="menu">
         #{if includeLogin}
         <span style="float:right;">
-          ${tagOpen}if session.get("username") == null}
+          ${play.modules.scaffold.utils.Tags.openTemplateTag}if session.get("username") == null}
           <a href="/login">Login</a>
-          ${tagOpen}/if}
-          ${tagOpen}else}
+          ${play.modules.scaffold.utils.Tags.openTemplateTag}/if}
+          ${play.modules.scaffold.utils.Tags.openTemplateTag}else}
           <a href="/logout">Logout</a>
-          ${tagOpen}/else}
+          ${play.modules.scaffold.utils.Tags.openTemplateTag}/else}
         </span>
         #{/if}
       </div>
 			<div id="content">
-		        ${tagOpen}if flash.error}
+		        ${play.modules.scaffold.utils.Tags.openTemplateTag}if flash.error}
 		            <div class="fError">
-		                <strong>${exprOpen}play.i18n.Messages.get(flash.error)}</strong>
+		                <strong>${play.modules.scaffold.utils.Tags.openExpressionTag}play.i18n.Messages.get(flash.error)}</strong>
 		            </div>
-		        ${tagOpen}/if}
-		        ${tagOpen}if flash.success}
+		        ${play.modules.scaffold.utils.Tags.openTemplateTag}/if}
+		        ${play.modules.scaffold.utils.Tags.openTemplateTag}if flash.success}
 		            <div class="fSuccess">
-		                <strong>${exprOpen}play.i18n.Messages.get(flash.success)}</strong>
+		                <strong>${play.modules.scaffold.utils.Tags.openExpressionTag}play.i18n.Messages.get(flash.success)}</strong>
 		            </div>
-		        ${tagOpen}/if}
+		        ${play.modules.scaffold.utils.Tags.openTemplateTag}/if}
 				
-		        ${tagOpen}doLayout /}
+		        ${play.modules.scaffold.utils.Tags.openTemplateTag}doLayout /}
 		    </div>
 		</div>
 		<div id="footer">

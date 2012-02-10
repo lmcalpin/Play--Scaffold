@@ -22,9 +22,9 @@ ${play.modules.scaffold.utils.Tags.openTemplateTag}extends 'main.html' /}
 				<a href="${play.modules.scaffold.utils.Tags.openActionTag}${entity.controllerName}.delete(entity.${entity.idField})}" onclick="if (!confirm('&{'scaffold.delete.confirm'}')) return false;">&{'scaffold.delete'}</a>
 			</td>
 			#{list items:entity.formElements, as:'elem'}
-        #{ifnot elem.isPassword()}
-					<td>#{scaffold.expression entity:elem.name, expr:'entity.$1' /}</td>
-        #{/ifnot}
+                #{ifnot elem.isPassword()}
+					<td>#{scaffold.expression substitutions:elem.name, expr:'entity.$1' /}</td>
+                #{/ifnot}
 			#{/list}
 		</tr>
 	${play.modules.scaffold.utils.Tags.openTemplateTag}/list}

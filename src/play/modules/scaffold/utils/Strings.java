@@ -84,4 +84,14 @@ public class Strings {
         }
         return false;
     }
+
+    public static String join(String in[], char joinBy) {
+        StringBuilder sb = new StringBuilder();
+        for (int idx = 0; idx < in.length; idx++) {
+            sb.append(in[idx]);
+            if (idx + 1 < in.length)
+                sb.append(joinBy);
+        }
+        return sb.toString();
+    }
 }

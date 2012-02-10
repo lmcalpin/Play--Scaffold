@@ -1,1 +1,1 @@
-ant -Dplay.path=D:\Programming\Tools\play-1.2\
+ant -Dplay.path=D:\Programming\Tools\play-1.2.3\

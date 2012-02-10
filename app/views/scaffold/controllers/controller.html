@@ -19,43 +19,43 @@ import play.mvc.With;
         render(entities);
     }
 
-    public static void create(${entity.name} entity) {
-        render(entity);
+    public static void create(${entity.name} ${entity.name.lowerFirstChar()}) {
+        render(${entity.name.lowerFirstChar()});
     }
 
     public static void show(${entity.idClass.name} id) {
-        ${entity.name} entity = ${play.modules.scaffold.generator.DatabaseAccessScaffolding.findByIdFor(entity).raw()};
-        render(entity);
+        ${entity.name} ${entity.name.lowerFirstChar()} = ${play.modules.scaffold.generator.DatabaseAccessScaffolding.findByIdFor(entity).raw()};
+        render(${entity.name.lowerFirstChar()});
     }
 
     public static void edit(${entity.idClass.name} id) {
-        ${entity.name} entity = ${play.modules.scaffold.generator.DatabaseAccessScaffolding.findByIdFor(entity).raw()};
-        render(entity);
+        ${entity.name} ${entity.name.lowerFirstChar()} = ${play.modules.scaffold.generator.DatabaseAccessScaffolding.findByIdFor(entity).raw()};
+        render(${entity.name.lowerFirstChar()});
     }
 
     public static void delete(${entity.idClass.name} id) {
-        ${entity.name} entity = ${play.modules.scaffold.generator.DatabaseAccessScaffolding.findByIdFor(entity).raw()};
+        ${entity.name} ${entity.name.lowerFirstChar()} = ${play.modules.scaffold.generator.DatabaseAccessScaffolding.findByIdFor(entity).raw()};
         ${play.modules.scaffold.generator.DatabaseAccessScaffolding.deleteFor(entity)};
         index();
     }
     
-    public static void save(@Valid ${entity.name} entity) {
+    public static void save(@Valid ${entity.name} ${entity.name.lowerFirstChar()}) {
         if (validation.hasErrors()) {
             flash.error(Messages.get("scaffold.validation"));
-            render("@create", entity);
+            render("@create", ${entity.name.lowerFirstChar()});
         }
         ${play.modules.scaffold.generator.DatabaseAccessScaffolding.saveFor(entity)};
         flash.success(Messages.get("scaffold.created", "${entity.name}"));
         index();
     }
 
-    public static void update(@Valid ${entity.name} entity) {
+    public static void update(@Valid ${entity.name} ${entity.name.lowerFirstChar()}) {
         if (validation.hasErrors()) {
             flash.error(Messages.get("scaffold.validation"));
-            render("@edit", entity);
+            render("@edit", ${entity.name.lowerFirstChar()});
         }
         #{if play.modules.scaffold.generator.DatabaseAccessScaffolding.requiresReattachFor(entity)}
-              entity = ${play.modules.scaffold.generator.DatabaseAccessScaffolding.reattachFor(entity)};
+              ${entity.name.lowerFirstChar()} = ${play.modules.scaffold.generator.DatabaseAccessScaffolding.reattachFor(entity)};
         #{/if}
         ${play.modules.scaffold.generator.DatabaseAccessScaffolding.updateFor(entity)};
         flash.success(Messages.get("scaffold.updated", "${entity.name}"));

@@ -21,23 +21,31 @@ package play.modules.scaffold.utils;
 import java.util.List;
 
 public class Tags {
-    public static String generateExpression(String entity, String expr) {
+    public static String expr(String expr) {
         StringBuilder sb = new StringBuilder();
         sb.append("${");
-        if (entity != null) {
-            expr = expr.replaceAll("\\$1", entity);
+        sb.append(expr);
+        sb.append("}");
+        return sb.toString();
+    }
+    
+    public static String generateExpression(String substitutions, String expr) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("${");
+        if (substitutions != null) {
+            expr = expr.replaceAll("\\$1", substitutions);
         }
         sb.append(expr);
         sb.append("}");
         return sb.toString();
     }
 
-    public static String generateExpression(List<String> entities, String expr) {
+    public static String generateExpression(List<String> substitutions, String expr) {
         StringBuilder sb = new StringBuilder();
         sb.append("${");
         int idx = 1;
-        if (entities != null) {
-            for (String entity : entities) {
+        if (substitutions != null) {
+            for (String entity : substitutions) {
                 String var = "\\$" + idx++;
                 expr = expr.replaceAll(var, entity);
             }
@@ -57,6 +65,14 @@ public class Tags {
 
     public static String getOpenScriptTag() {
         return "%{";
+    }
+
+    public static String getOpenMessageTag() {
+        return "&{";
+    }
+
+    public static String getOpenExpressionTag() {
+        return "${";
     }
 
     public static String getOpenTemplateTag() {
