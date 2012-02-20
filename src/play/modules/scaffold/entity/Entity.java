@@ -42,6 +42,7 @@ import play.modules.scaffold.utils.Strings;
  */
 public class Entity {
     private String packageName;
+    private String subpackage;
     private String name;
     private String controllerName;
     private Class<?> modelType;
@@ -54,11 +55,15 @@ public class Entity {
     // form elements that we render in the view
     private List<FormElement> formElements;
     private ViewScaffoldingStrategy scaffoldingStrategy;
+    
+    // models package name
+    private static final String MODELS_PKG_NAME = "models";
 
     public Entity(Class<?> clazz) {
         this.modelType = clazz;
-        this.name = clazz.getSimpleName();
         this.packageName = Classes.getPackageName(clazz);
+        this.subpackage = getSubpackage();
+        this.name = clazz.getSimpleName();
         
         Scaffolding scaffolding = clazz.getAnnotation(Scaffolding.class);
         String controllerOverride = null;
@@ -129,12 +134,35 @@ public class Entity {
         return controllerName;
     }
 
+    public String getSubpackageAndControllerName() {
+        if (subpackage.isEmpty())
+            return controllerName;
+        return subpackage + "." + controllerName;
+    }
+
     public String getName() {
         return name;
     }
 
+    public String getSubpackageAndName() {
+        if (subpackage.isEmpty())
+            return name;
+        return subpackage + "." + name;
+    }
+
     public String getPackageName() {
         return packageName;
+    }
+
+    public String getSubpackage() {
+        if (subpackage != null)
+            return subpackage;
+        if (packageName.startsWith(MODELS_PKG_NAME + ".")) {
+            subpackage = packageName.substring(MODELS_PKG_NAME.length() + 1);
+        } else {
+            subpackage = "";
+        }
+        return subpackage;
     }
 
     public PersistenceStrategy getPersistenceStrategy() {

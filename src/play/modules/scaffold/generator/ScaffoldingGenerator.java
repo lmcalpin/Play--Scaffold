@@ -198,17 +198,17 @@ public class ScaffoldingGenerator {
 
     private void generateForEntity(Entity entity, TargetFileType type, String templateFolderPath,
             String templateFileName, String targetName) {
-        /*
         if (!isFlattenPaths() && entity.getSubpackage() != null) {
             String subpackage = entity.getSubpackage();
-            subpackage = subpackage.replaceAll("\\.", "/");
-            targetName = subpackage + "/" + targetName;
+            if (!subpackage.isEmpty()) {
+                subpackage = subpackage.replaceAll("\\.", "/");
+                targetName = subpackage + "/" + targetName;
+            }
         }
-        */
         String[] paths = getPaths(type, templateFolderPath, templateFileName, targetName);
         Map<String, Object> templateArgs = new HashMap<String, Object>();
         templateArgs.put("entity", entity);
-        //templateArgs.put("subpackage", isFlattenPaths() ? "" : entity.getSubpackage() != null ? "." + entity.getSubpackage() : "");
+        templateArgs.put("subpackage", isFlattenPaths() ? "" : entity.getSubpackage().isEmpty() ? "" : "." + entity.getSubpackage());
         invokeTemplate(type, paths[0], paths[1], templateArgs);
     }
 
@@ -229,13 +229,8 @@ public class ScaffoldingGenerator {
         String additionalPath = type.getPath();
         if (additionalPath.length() > 0)
             targetPath = targetPath + additionalPath + '/';
-        ensureDirectoryExists(targetPath);
-        if (targetFileName.contains("/")) {
-            String[] fileSplit = targetFileName.split("/");
-            if (fileSplit.length >= 2) {
-                ensureDirectoryExists(targetPath + '/' + Strings.join(Arrays.copyOfRange(fileSplit, 0, fileSplit.length-1), '/'));
-            }
-        }
+        String pathToTargetFile = targetFileName.contains("/") ? targetFileName.substring(0, targetFileName.lastIndexOf('/')) : "";
+        ensureDirectoryExists(targetPath + pathToTargetFile);
         String targetFile = targetPath + targetFileName + type.getTargetSuffix();
         return new String[] { templateFile, targetFile };
     }
@@ -319,7 +314,7 @@ public class ScaffoldingGenerator {
     private void ensureDirectoryExists(String templatePath) {
         File viewPathDirectory = new File(templatePath);
         if (!viewPathDirectory.exists()) {
-            viewPathDirectory.mkdir();
+            viewPathDirectory.mkdirs();
         }
     }
 

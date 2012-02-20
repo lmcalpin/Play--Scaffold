@@ -43,10 +43,8 @@ public class Generate {
     private static final String EXCLUDE = "--exclude";
     private static final String INCLUDE = "--include";
     private static final String OVERWRITE = "--overwrite";
-    // TODO: --flatten used to be default; we intend to change this so that future
-    // versions of scaffold use the subpackages the model is in when generating the controllers
-    // and views.  This work is currently unfinished...
     private static final String FLATTEN_PATHS = "--flatten";
+    private static final String NO_FLATTEN_PATHS = "--no-flatten";
     private static final String WITH_LAYOUT = "--with-layout";
     private static final String WITH_LOGIN = "--with-login";
     private static final String ALL = "--all";
@@ -92,6 +90,8 @@ public class Generate {
                     excludeRegEx = validateFilePatternArgs(EXCLUDE, arg.split("=")[1]);
                 } else if (lowerArg.equalsIgnoreCase(FLATTEN_PATHS)) {
                     flattenPaths = true;
+                } else if (lowerArg.equalsIgnoreCase(NO_FLATTEN_PATHS)) {
+                    flattenPaths = false;
                 } else if (lowerArg.equalsIgnoreCase(WITH_LAYOUT)) {
                     includeLayout = true;
                 } else if (lowerArg.equalsIgnoreCase(WITH_LOGIN)) {
